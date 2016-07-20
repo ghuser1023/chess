@@ -88,49 +88,6 @@ class Unit(object):
         return (self.hp <= 0)
 
 
-class Side(object):
-    def __init__(self, name):
-        self.units = []
-        self.morale = 100
-        self.other = None
-        self.name = name
-
-    def add_opponent(self, other):
-        self.other = other
-
-    def add_unit(self, unit):
-        self.units.append(unit)
-
-    def remove_unit(self, unit):
-        self.units.pop(unit)
-
-    def add_morale(self, morale):
-        self.morale += morale
-        if self.morale > 100:
-            self.morale = 100
-        if self.morale < 0:
-            self.morale = 0
-
-    def get_obdedience(self, morale):
-        if morale >= 50:
-            return 1
-        else:
-            return 0.02 * morale
-
-    def get_num_abilities(self, morale):
-        num = 0
-        if morale >= 15:
-            num += 1
-        if morale >= 40:
-            num += 1
-        if morale >= 80:
-            num += 1
-        return num
-
-    def __str__(self):
-        return self.name
-
-
 def initialize_board():
     white.other = black
     black.other = white
@@ -270,7 +227,7 @@ class Bishop(Unit):
             local_unit_list = []
             for i in range(-1, 2):
                 for j in range(-1, 2):
-                    checked_unit = self.board.get_unit(self.board.get_loc(aelf)[0] + i, self.board.get_loc[1] + j)
+                    checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc[1] + j)
                     if checked_unit.side == self.side:
                         local_unit_list.append(checked_unit)
             for unit in local_unit_list:
@@ -350,7 +307,6 @@ class Board(object):
         self.units = {}
         self.side1 = None
         self.side2 = None
-        self.error = ""
         for x in range(8):
             row = []
             for y in range(8):
@@ -386,8 +342,10 @@ class Board(object):
                 square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
                 self.move_unit(unit, square[0], square[1])
                 self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
+            self.error = ""
+            return True
         else:
-            self.error = "That move is invalid."
+            return False
 
     def valid(self, x, y):
         if (x >= 0) and (x <= 7) and (y >= 0) and (y <= 7):
@@ -434,7 +392,55 @@ class Board(object):
         return list(self.units.keys())
 
 
+class Side(object):
+    def __init__(self, name):
+        self.units = []
+        self.morale = 100
+        self.other = None
+        self.name = name
+
+    def add_opponent(self, other):
+        self.other = other
+
+    def get_opponent(self):
+        return self.other
+
+    def get_name(self):
+        return self.name
+
+    def add_unit(self, unit):
+        self.units.append(unit)
+
+    def remove_unit(self, unit):
+        self.units.pop(unit)
+
+    def add_morale(self, morale):
+        self.morale += morale
+        if self.morale > 100:
+            self.morale = 100
+        if self.morale < 0:
+            self.morale = 0
+
+    def get_obdedience(self, morale):
+        if morale >= 50:
+            return 1
+        else:
+            return 0.02 * morale
+
+    def get_num_abilities(self, morale):
+        num = 0
+        if morale >= 15:
+            num += 1
+        if morale >= 40:
+            num += 1
+        if morale >= 80:
+            num += 1
+        return num
+
+    def __str__(self):
+        return self.name
+
 board = Board()
-white = Side("w")
-black = Side("b")
+white = Side("white")
+black = Side("black")
 initialize_board()
