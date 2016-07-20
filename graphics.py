@@ -65,6 +65,7 @@ class Selections:
                 cur_side = cur_side.get_opponent()
                 state[0] = "select_unit"
                 state[1] = None
+                Selections.error = ""
             else:
                 Selections.error = "That move is invalid."
         else:

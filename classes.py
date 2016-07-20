@@ -69,7 +69,7 @@ class Unit(object):
             self.levelup()
 
     def check_move(self, x, y):
-        if (x, y) in self.moves:
+        if (self.side == white and (x, y) in self.moves) or (self.side == black and (x, -y) in self.moves):
             return True
         return False
 
