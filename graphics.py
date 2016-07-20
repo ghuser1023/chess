@@ -2,14 +2,20 @@ from classes import *
 import pyglet
 from pyglet.window import mouse
 
-SQ_SIZE = 40
+sq_size = 40
 P_SIZE = 28
 pieceimages = {}
 abilityimages = {}
 
 w_length = 400
-w_height = 500
+w_height = 460
 top_bar = 60
+
+piece_calib = 46
+abil_bot_dist = 24
+abil_width_dist = 60
+abil_init_width = 286
+msg_height = w_height - 20
 
 window = pyglet.window.Window(w_length, w_height)
 
@@ -18,8 +24,8 @@ states = ["working", "select_unit", "select_move", "select_attack", "select_abil
 state = ["select_unit", None]
 
 def loc_to_square(x, y):
-    x = x // 40
-    y = (y - top_bar) // 40
+    x = x // sq_size
+    y = (y - top_bar) // sq_size
     if x > 0 and y > 0:
         if x < 9 and y < 9:
             return (x - 1, y - 1)
@@ -66,6 +72,7 @@ def on_draw():
     draw_board()
     draw_pieces()
     draw_ability_images()
+    draw_message()
 
 def import_abilities():
     abilityimages["arrowstorm"] = pyglet.resource.image('abilities/Arrows.png')
@@ -127,14 +134,14 @@ import_abilities()
 
 def draw_white_rect(x, y):
     pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-    ("v2i", (SQ_SIZE*x, SQ_SIZE*y + top_bar, SQ_SIZE*(x+1), SQ_SIZE*y + top_bar,
-             SQ_SIZE*(x+1), SQ_SIZE*(y+1) + top_bar, SQ_SIZE*x, SQ_SIZE*(y+1) + top_bar)),
+    ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
+             sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
     ("c3B", (255, 255, 255)*4))
 
 def draw_black_rect(x, y):
     pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-    ("v2i", (SQ_SIZE*x, SQ_SIZE*y + top_bar, SQ_SIZE*(x+1), SQ_SIZE*y + top_bar,
-             SQ_SIZE*(x+1), SQ_SIZE*(y+1) + top_bar, SQ_SIZE*x, SQ_SIZE*(y+1) + top_bar)),
+    ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
+             sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
     ("c3B", (0, 0, 0)*4))
 
 def draw_board():
@@ -153,16 +160,21 @@ def draw_pieces():
     for piece in board.get_pieces():
         side = str(piece.side)
         typ = str(piece)
-        locx = board.get_loc(piece)[0]*SQ_SIZE + 46
-        locy = board.get_loc(piece)[1]*SQ_SIZE + 106
+        locx = board.get_loc(piece)[0]*sq_size + piece_calib
+        locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
         pieceimages[side + typ].blit(locx, locy)
 
 def draw_ability_images():
     if len(cur_abils) > 0:
-        abilityimages[cur_abils[0]].blit(286, 36)
+        abilityimages[cur_abils[0]].blit(abil_init_width, top_bar - abil_bot_dist)
     if len(cur_abils) > 1:
-        abilityimages[cur_abils[1]].blit(326, 36)
+        abilityimages[cur_abils[1]].blit(abil_init_width + abil_width_dist, top_bar - abil_bot_dist)
 
+def draw_message():
+    if board.error != "":
+        label = pyglet.text.Label(board.error, font_name = 'Times New Roman', font_size = 12,
+                                  x = w_length // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
+        label.draw()
 
 pyglet.app.run()
 

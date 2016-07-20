@@ -68,6 +68,11 @@ class Unit(object):
             self.xp -= self.xp_threshold
             self.levelup()
 
+    def check_move(self, x, y):
+        if (x, y) in self.moves:
+            return True
+        return False
+
     def tick(self):
         buffs = []
         for buff in self.buffs[0]:
@@ -81,6 +86,7 @@ class Unit(object):
 
     def isDead(self):
         return (self.hp <= 0)
+
 
 class Side(object):
     def __init__(self, name):
@@ -124,6 +130,7 @@ class Side(object):
     def __str__(self):
         return self.name
 
+
 def initialize_board():
     white.other = black
     black.other = white
@@ -155,6 +162,7 @@ def initialize_board():
         board.add_unit(piece, column, 7)
         black.add_unit(piece)
         column += 1
+
 
 class Pawn(Unit):
     def __init__(self):
@@ -196,6 +204,7 @@ class Pawn(Unit):
     def __str__(self):
         return 'p'+ str(self.level)
 
+
 class Fort(Unit):
     def __init__(self):
         moves = []
@@ -217,6 +226,7 @@ class Fort(Unit):
 
     def __str__(self):
         return 'r'+ str(self.level)
+
 
 class Knight(Unit):
     def __init__(self):
@@ -241,6 +251,7 @@ class Knight(Unit):
 
     def __str__(self):
         return 'n'+ str(self.level)
+
 
 class Bishop(Unit):
     def __init__(self):
@@ -273,6 +284,7 @@ class Bishop(Unit):
     def __str__(self):
         return 'b'+ str(self.level)
 
+
 class King(Unit):
     def __init__(self):
         self.rally_amt = 30
@@ -300,6 +312,7 @@ class King(Unit):
 
     def __str__(self):
         return 'k'+ str(self.level)
+
 
 class Queen(Unit):
     def __init__(self):
@@ -330,12 +343,14 @@ class Queen(Unit):
     def __str__(self):
         return 'q' + str(self.level)
 
+
 class Board(object):
     def __init__(self):
         self.board = []
         self.units = {}
         self.side1 = None
         self.side2 = None
+        self.error = ""
         for x in range(8):
             row = []
             for y in range(8):
@@ -362,16 +377,17 @@ class Board(object):
 
     def move_unit(self, unit, x, y):
         loc = self.units[unit]
-        if (loc[0] + x >= 0) and (loc[0] + x <= 7):
-            if (loc[1] + y >= 0) and (loc[1] + y <= 7):
-                if self.board[loc[0] + x][loc[1] + y] == None:
-                    self.board[loc[0] + x][loc[1] + y] = unit
-                    self.board[loc[0]][loc[1]] = None
-                    self.units[unit] = (loc[0] + x, loc[1] + y)
-                else:
-                    square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
-                    self.move_unit(unit, square[0], square[1])
-                    self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
+        if self.valid(loc[0] + x, loc[1] + y) and unit.check_move(x, y):
+            if self.board[loc[0] + x][loc[1] + y] == None:
+                self.board[loc[0] + x][loc[1] + y] = unit
+                self.board[loc[0]][loc[1]] = None
+                self.units[unit] = (loc[0] + x, loc[1] + y)
+            else:
+                square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
+                self.move_unit(unit, square[0], square[1])
+                self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
+        else:
+            self.error = "That move is invalid."
 
     def valid(self, x, y):
         if (x >= 0) and (x <= 7) and (y >= 0) and (y <= 7):
@@ -416,6 +432,7 @@ class Board(object):
 
     def get_pieces(self):
         return list(self.units.keys())
+
 
 board = Board()
 white = Side("w")
