@@ -1,3 +1,5 @@
+# This file contains graphics and the pyglet application loop.
+
 from classes import *
 import pyglet
 from pyglet.window import mouse
@@ -55,25 +57,29 @@ class Selections:
                     cur_abils.append(x)
 
     @staticmethod
-    def select_move(loc):
+    def select_general(method, x, y, error):
         global cur_side
-        (a, b) = board.get_loc(state[1])
-        (x, y) = loc
         if state[1].get_side() == cur_side:
-            worked = board.move_unit(state[1], x - a, y - b)
+            worked = method(state[1], x, y)
             if worked:
                 cur_side = cur_side.get_opponent()
                 state[0] = "select_unit"
                 state[1] = None
                 Selections.error = ""
             else:
-                Selections.error = "That move is invalid."
+                Selections.error = "That " + error + " is invalid."
         else:
             Selections.error = "It is " + cur_side.get_name() + " to move."
 
     @staticmethod
+    def select_move(loc):
+        (a, b) = board.get_loc(state[1])
+        (x, y) = loc
+        Selections.select_general(board.move_unit, x - a, y - b, "move")
+
+    @staticmethod
     def select_attack(loc):
-        pass
+        Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
 
     @staticmethod
     def select_ability(loc):

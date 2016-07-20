@@ -2,7 +2,6 @@
 
 import math
 
-
 class Unit(object):
     def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value):
         self.base_str = strength
@@ -50,7 +49,7 @@ class Unit(object):
         buff = 1
         for x in self.buffs[1]:
             buff *= x[0]
-            self.hp -= (damage / buff)
+        self.hp -= (damage / buff)
         if self.hp < 0:
             self.hp = 0
 
@@ -72,9 +71,12 @@ class Unit(object):
             self.levelup()
 
     def check_move(self, x, y):
-        if (self.side == white and (x, y) in self.moves) or (self.side == black and (x, -y) in self.moves):
+        if (x, y) in self.moves:
             return True
         return False
+
+    def check_attack(self, x, y):
+        return self.check_move(x, y)
 
     def tick(self):
         buffs = []
@@ -86,6 +88,9 @@ class Unit(object):
                     self.cooldowns -= 1
                 if self.cooldowns[1] > 0:
                     self.cooldowns -= 1
+
+    def get_hp(self):
+        return self.hp
 
     def isDead(self):
         return (self.hp <= 0)
@@ -115,14 +120,14 @@ class Pawn(Unit):
         Unit.deal_damage(self, damage / buff)
 
     def effective_strength(self):
-        local_unit_list = []
+        num_local = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
-                checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc[1] + j)
-                if checked_unit.side == self.side:
-                    local_unit_list.append(checked_unit)
-        buff = len(local_unit_list) * 0.3 + 1
-        return (buff * self.base_str)
+                checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
+                if checked_unit != None and checked_unit.side == self.side:
+                    num_local += 1
+        buff = num_local * 0.3 + 1
+        return buff * self.base_str
 
     def abilities(self):
         return ["arrowstorm"]

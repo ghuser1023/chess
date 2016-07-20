@@ -61,23 +61,24 @@ class Board(object):
     def get_loc(self, unit):
         return self.units[unit]
 
-    def remove_unit(self, unit, x, y):
+    def remove_unit(self, unit):
+        (x, y) = self.units[unit]
         self.board[x][y] = None
         self.units.pop(unit)
 
     def move_unit(self, unit, x, y):
         loc = self.units[unit]
-        if self.valid(loc[0] + x, loc[1] + y) and unit.check_move(x, y):
-            if self.board[loc[0] + x][loc[1] + y] == None:
-                self.board[loc[0] + x][loc[1] + y] = unit
-                self.board[loc[0]][loc[1]] = None
-                self.units[unit] = (loc[0] + x, loc[1] + y)
-            else:
-                square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
-                self.move_unit(unit, square[0], square[1])
-                self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
-            self.error = ""
-            return True
+        if (unit.get_side() == white and unit.check_move(x, y)) or (unit.get_side() == black and unit.check_move(x, -y)):
+            if self.valid(loc[0] + x, loc[1] + y):
+                if self.board[loc[0] + x][loc[1] + y] == None:
+                    self.board[loc[0] + x][loc[1] + y] = unit
+                    self.board[loc[0]][loc[1]] = None
+                    self.units[unit] = (loc[0] + x, loc[1] + y)
+                else:
+                    square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
+                    self.move_unit(unit, square[0], square[1])
+                    self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
+                return True
         else:
             return False
 
@@ -109,8 +110,19 @@ class Board(object):
         else:
             return piece
 
-    def attack_unit(self, attacker, defender):
-        defender.deal_damage(attacker.effective_strength())
+    def attack_unit(self, attacker, x, y):
+        (a, b) = self.units[attacker]
+        defender = self.board[x][y]
+        if (attacker.get_side() == white and attacker.check_attack(x - a, y - b)) or (
+                attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
+            defender.deal_damage(attacker.effective_strength())
+            print("An attack occured!")
+            print("Defender's HP:", defender.get_hp())
+            if defender.isDead():
+                self.remove_unit(defender)
+            return True
+        else:
+            return False
 
     def end_turn(self):
         for x in self.units.keys():
