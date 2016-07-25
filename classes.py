@@ -111,7 +111,6 @@ class Board(object):
                 d = 0
             else:
                 d = (y - b) // abs(y - b)
-            print("x =", x, "y =", y, "a =", a, "b =", b, "c =", c, "d =", d)
             while a != x or b != y:
                 a += c
                 b += d

@@ -79,8 +79,8 @@ class Selections:
 
     @staticmethod
     def select_attack(loc):
-        if type(board.get_unit(loc[0], loc[1])) == type(state[1]):
-            Selections.error = "That attack is invalid."
+        if board.get_unit(loc[0], loc[1]).get_side() == state[1].get_side():
+            Selections.error = "No friendly fire."
         else:
             Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
 
