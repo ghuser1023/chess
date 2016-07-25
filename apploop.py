@@ -67,11 +67,12 @@ class Draw:
             typ = str(piece)
             locx = board.get_loc(piece)[0]*sq_size + piece_calib
             locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
-            if piece == state[1]:
+            if piece == state[1] and piece != None:
                 label = pyglet.text.Label(piece.get_name(), font_name='Courier New', font_size=14, bold = True,
                                           x = sq_size, y = name_height, anchor_x='left', anchor_y='center')
                 label.draw()
                 Draw.draw_bar(piece.get_perhp(), (0, 255, 0), bar_height)
+                Draw.draw_exp(piece.get_cur_xp(), piece.get_max_xp())
                 pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
                      ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
                             locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
@@ -82,8 +83,16 @@ class Draw:
     def draw_ability_images():
         if len(cur_abils) > 0:
             abilityimages[cur_abils[0]].blit(abil_init_width, top_bar - abil_bot_dist)
+            label = pyglet.text.Label(str(state[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
+                                      x=abil_init_width + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
+                                      anchor_x='center', anchor_y='center')
+            label.draw()
         if len(cur_abils) > 1:
             abilityimages[cur_abils[1]].blit(abil_init_width + abil_width_dist, top_bar - abil_bot_dist)
+            label = pyglet.text.Label(str(state[1].get_cd_2()), font_name='Courier New', font_size=16, bold=True,
+                                      x=abil_init_width + abil_width_dist + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
+                                      anchor_x='center', anchor_y='center')
+            label.draw()
 
     @staticmethod
     def draw_message():
@@ -91,6 +100,15 @@ class Draw:
             label = pyglet.text.Label(Selections.error, font_name = 'Courier New', font_size = 11, bold = True,
                                       x = w_length // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
             label.draw()
+
+    @staticmethod
+    def draw_exp(cur, max):
+        label = pyglet.text.Label(str(cur), font_name='Courier New', font_size=18, bold=True,
+                                  x = exp_init_width, y = exp_init_height, anchor_x='center', anchor_y='bottom')
+        label.draw()
+        label = pyglet.text.Label("\\" + str(max), font_name='Courier New', font_size=12, bold=True,
+                                  x = exp_init_width, y = exp_init_height, anchor_x='center', anchor_y='top')
+        label.draw()
 
     @staticmethod
     def draw_bar(percent, color, height):

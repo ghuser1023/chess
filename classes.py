@@ -1,6 +1,6 @@
 # This file contains other important classes.
 
-from pieces import *
+from subpieces import *
 
 def initialize_board():
     white.other = black

@@ -13,15 +13,18 @@ w_height = 460
 top_bar = 60
 
 piece_calib = 46
-abil_bot_dist = 24
-abil_width_dist = 60
-abil_init_width = 266
+abil_bot_dist = 6
+abil_width_dist = 50
+abil_init_width = 276
 msg_height = w_height - 20
 
 bar_len = 150
 bar_width = 15
 bar_height = 50
 name_height = 80
+
+exp_init_width = 234
+exp_init_height = 50
 
 cur_abils = []
 cur_side = white
