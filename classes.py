@@ -178,10 +178,10 @@ class Side(object):
         return num
 
     def __str__(self):
-        return self.name
+        return self.name.lower()
 
 
 board = Board()
-white = Side("white")
-black = Side("black")
+white = Side("White")
+black = Side("Black")
 initialize_board()

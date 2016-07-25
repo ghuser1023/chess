@@ -3,7 +3,7 @@
 import math
 
 class Unit(object):
-    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value):
+    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name):
         self.base_str = strength
         self.base_hp = hp
         self.buffs = [[],[]]
@@ -18,9 +18,13 @@ class Unit(object):
         self.side = None
         self.cooldowns = [0, 0]
         self.value = value
+        self.name = name
 
     def set_board(self, board):
         self.board = board
+
+    def get_name(self):
+        return self.side.get_name() + " " + self.name
 
     def get_side(self):
         return self.side
@@ -92,6 +96,9 @@ class Unit(object):
     def get_hp(self):
         return self.hp
 
+    def get_perhp(self):
+        return self.hp / float(self.base_hp)
+
     def isDead(self):
         return (self.hp <= 0)
 
@@ -99,7 +106,7 @@ class Unit(object):
 class Pawn(Unit):
     def __init__(self):
         moves = [(0, 1)]
-        Unit.__init__(self, 3, 10, 1, 2, moves, 3)
+        Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn")
 
     def arrowstorm(self, target):
         if self.cooldown[0] == 0:
@@ -142,7 +149,7 @@ class Fort(Unit):
         for i in range(-8, 9):
             moves.append((0, i))
             moves.append((i, 0))
-        Unit.__init__(self, 7, 75, 3, 3, moves, 10)
+        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort")
 
     def aerial_defense(self, target):
         if self.cooldown[0] == 0:
@@ -162,7 +169,7 @@ class Fort(Unit):
 class Knight(Unit):
     def __init__(self):
         moves = [(-1, -2), (-1, 2), (-2, -1), (-2, 1), (1, -2), (1, 2), (2, -1), (2, 1)]
-        Unit.__init__(self, 10, 50, 5, 4, moves, 10)
+        Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight")
         self.chivalrous = (False, 0)
 
     def charge(self, moveLoc):
@@ -190,7 +197,7 @@ class Bishop(Unit):
         for i in range(-8, 9):
             moves.append((i, i))
             moves.append((-i, i))
-        Unit.__init__(self, 5, 20, 4, 3, moves, 15)
+        Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop")
 
     def regeneration(self, target):
         if self.cooldown[0] == 0:
@@ -221,7 +228,7 @@ class King(Unit):
     def __init__(self):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-        Unit.__init__(self, 7, 40, 0, 3, moves, 100)
+        Unit.__init__(self, 7, 40, 0, 3, moves, 100, "King")
 
     def call_to_arms(self, x1, y1, x2, y2):
         if self.cooldown[0] == 0:
@@ -253,7 +260,7 @@ class Queen(Unit):
         for i in range(-8, 9):
             for j in range(-8, 9):
                 moves.append((i, j))
-        Unit.__init__(self, 7, 35, 0, 3, moves, 25)
+        Unit.__init__(self, 7, 35, 0, 3, moves, 25, "Queen")
 
     def subterfuge(self, target):
         if self.cooldown[0] == 0:
