@@ -22,6 +22,7 @@ def on_mouse_press(x, y, button, modifiers):
                 elif unit == state[1]:
                     state[0] = "select_unit"
                     state[1] = None
+                    cur_abils.clear()
                 elif unit.get_side() == state[1].get_side():
                     Selections.select_unit(x, y)
                 else:

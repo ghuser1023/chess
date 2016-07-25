@@ -70,6 +70,7 @@ class Selections:
                 cur_side = cur_side.get_opponent()
                 state[0] = "select_unit"
                 state[1] = None
+                cur_abils.clear()
                 Selections.error = ""
             else:
                 Selections.error = "That " + error + " is invalid."
