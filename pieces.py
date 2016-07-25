@@ -189,6 +189,7 @@ class Bishop(Unit):
         moves = []
         for i in range(-8, 9):
             moves.append((i, i))
+            moves.append((-i, i))
         Unit.__init__(self, 5, 20, 4, 3, moves, 15)
 
     def regeneration(self, target):

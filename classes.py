@@ -68,53 +68,20 @@ class Board(object):
 
     def move_unit(self, unit, x, y):
         loc = self.units[unit]
-        if (unit.get_side() == white and unit.check_move(x, y)) or (unit.get_side() == black and unit.check_move(x, -y)):
-            if self.valid(loc[0] + x, loc[1] + y):
-                if self.board[loc[0] + x][loc[1] + y] == None:
-                    self.board[loc[0] + x][loc[1] + y] = unit
-                    self.board[loc[0]][loc[1]] = None
-                    self.units[unit] = (loc[0] + x, loc[1] + y)
-                else:
-                    square = self.closest_square(loc[0], loc[1], loc[0] + x, loc[1] + y)
-                    self.move_unit(unit, square[0], square[1])
-                    self.attack_unit(unit, self.board[loc[0] + x][loc[1] + y])
+        if (unit.get_side() == white and unit.check_move(x,y)) or (unit.get_side() == black and unit.check_move(x,-y)):
+            if self.valid(loc[0] + x, loc[1] + y) and self.valid_path(unit, loc[0] + x, loc[1] + y):
+                self.board[loc[0] + x][loc[1] + y] = unit
+                self.board[loc[0]][loc[1]] = None
+                self.units[unit] = (loc[0] + x, loc[1] + y)
                 return True
         else:
             return False
-
-    def valid(self, x, y):
-        if (x >= 0) and (x <= 7) and (y >= 0) and (y <= 7):
-            return True
-        return False
-
-    def closest_square(self, a, b, x, y):
-        squares = []
-        for m in range(3):
-            for n in range(3):
-                squares.append((x + m - 1, y + m - 1))
-        squares.remove((x, y))
-        for square in squares:
-            if not self.valid(square[0], square[1]):
-                squares.remove(square)
-            if self.board[square[0]][square[1]] != None:
-                squares.remove(square)
-        piece = None
-        min = 100
-        for square in squares:
-            dist = (square[0] - a) * (square[0] - a) + (square[1] - b) * (square[1] - b)
-            if dist < min:
-                min = dist
-                piece = square
-        if min == 100:
-            return None
-        else:
-            return piece
 
     def attack_unit(self, attacker, x, y):
         (a, b) = self.units[attacker]
         defender = self.board[x][y]
         if (attacker.get_side() == white and attacker.check_attack(x - a, y - b)) or (
-                attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
+                        attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
             defender.deal_damage(attacker.effective_strength())
             print("An attack occured!")
             print("Defender's HP:", defender.get_hp())
@@ -123,6 +90,34 @@ class Board(object):
             return True
         else:
             return False
+
+    def valid(self, x, y):
+        if (x >= 0) and (x <= 7) and (y >= 0) and (y <= 7):
+            return True
+        return False
+
+    def valid_path(self, unit, x, y):
+        (a, b) = self.units[unit]
+        if abs(x - a) <= 1 and abs(y - b) <= 1:
+            return True
+        elif type(unit) is Knight:
+            return True
+        else:
+            if x == a:
+                c = 0
+            else:
+                c = (x - a) // abs(x - a)
+            if y == b:
+                d = 0
+            else:
+                d = (y - b) // abs(y - b)
+            print("x =", x, "y =", y, "a =", a, "b =", b, "c =", c, "d =", d)
+            while a != x or b != y:
+                a += c
+                b += d
+                if self.board[a][b] != None:
+                    return False
+            return True
 
     def end_turn(self):
         for x in self.units.keys():

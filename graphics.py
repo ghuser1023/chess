@@ -79,7 +79,10 @@ class Selections:
 
     @staticmethod
     def select_attack(loc):
-        Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
+        if type(board.get_unit(loc[0], loc[1])) == type(state[1]):
+            Selections.error = "That attack is invalid."
+        else:
+            Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
 
     @staticmethod
     def select_ability(loc):
