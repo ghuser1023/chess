@@ -16,11 +16,14 @@ def on_mouse_press(x, y, button, modifiers):
         elif state[0] == "unit_selected":
             loc = Utils.loc_to_square(x, y)
             if loc != None:
-                if board.get_unit(loc[0], loc[1]) == None:
+                unit = board.get_unit(loc[0], loc[1])
+                if unit == None:
                     Selections.select_move(loc)
-                elif board.get_unit(loc[0], loc[1]) == state[1]:
+                elif unit == state[1]:
                     state[0] = "select_unit"
                     state[1] = None
+                elif unit.get_side() == state[1].get_side():
+                    Selections.select_unit(x, y)
                 else:
                     Selections.select_attack(loc)
             else:

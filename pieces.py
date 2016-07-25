@@ -24,7 +24,7 @@ class Unit(object):
         self.board = board
 
     def get_name(self):
-        return self.side.get_name() + " " + self.name
+        return self.side.get_name() + " " + self.name + " Lv. " + str(self.level)
 
     def get_side(self):
         return self.side
@@ -44,7 +44,7 @@ class Unit(object):
             self.level_multiplier = 1.25 / 1.1
 
     def effective_strength(self):
-        buff = 0
+        buff = 1
         for x in self.buffs[0]:
             buff *= x[0]
         return self.base_str * buff
