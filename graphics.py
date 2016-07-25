@@ -5,7 +5,7 @@ import pyglet
 from pyglet.window import mouse
 
 sq_size = 40
-P_SIZE = 28
+p_size = 28
 pieceimages = {}
 abilityimages = {}
 
@@ -178,16 +178,16 @@ class Draw:
     @staticmethod
     def draw_white_rect(x, y):
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-        ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
+            ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
-        ("c3B", (255, 255, 255)*4))
+            ("c3B", (255, 255, 255)*4))
 
     @staticmethod
     def draw_black_rect(x, y):
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-        ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
+            ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
-        ("c3B", (0, 0, 0)*4))
+            ("c3B", (0, 0, 0)*4))
 
     @staticmethod
     def draw_board():
@@ -209,6 +209,11 @@ class Draw:
             typ = str(piece)
             locx = board.get_loc(piece)[0]*sq_size + piece_calib
             locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
+            if piece == state[1]:
+                pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                     ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
+                              locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
+                     ("c3B", (0, 255, 0) * 4))
             pieceimages[side + typ].blit(locx, locy)
 
     @staticmethod
