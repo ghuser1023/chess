@@ -15,9 +15,9 @@ def on_mouse_press(x, y, button, modifiers):
             Selections.select_unit(x, y)
         elif state[0] == "unit_selected":
             loc = Utils.loc_to_square(x, y)
-            if loc != None:
+            if loc is not None:
                 unit = board.get_unit(loc[0], loc[1])
-                if unit == None:
+                if unit is None:
                     Selections.select_move(loc)
                 elif unit == state[1]:
                     state[0] = "select_unit"
@@ -29,7 +29,7 @@ def on_mouse_press(x, y, button, modifiers):
                     Selections.select_attack(loc)
             else:
                 abil = Utils.loc_to_ability(x, y)
-                if (abil != None):
+                if abil is not None:
                     Selections.select_ability(loc)
 
 
@@ -65,7 +65,8 @@ class Draw:
     def draw_pieces():
         for piece in board.get_pieces():
             side = str(piece.side)[0]
-            typ = str(piece)
+            typ = str(piece)[:1]
+            lvl = piece.get_level()
             locx = board.get_loc(piece)[0]*sq_size + piece_calib
             locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
             if piece == state[1] and piece != None:
@@ -78,7 +79,7 @@ class Draw:
                      ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
                             locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
                      ("c3B", (0, 255, 0) * 4))
-            pieceimages[side + typ].blit(locx, locy)
+            pieceimages[side + typ + str(lvl)].blit(locx, locy)
 
     @staticmethod
     def draw_ability_images():

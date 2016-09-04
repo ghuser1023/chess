@@ -18,6 +18,9 @@ class Unit(object):
         self.value = value
         self.name = name
 
+    def get_xp_drop(self):
+        return self.xp_drop
+
     def set_board(self, board):
         self.board = board
 
@@ -80,9 +83,9 @@ class Unit(object):
 
     def gain_xp(self, xp):
         self.xp += xp
-        if self.xp >= self.xp_threshold:
+        while self.xp >= self.xp_threshold and self.level <= 3:
             self.xp -= self.xp_threshold
-            self.levelup()
+            self.level_up()
 
     def check_move(self, x, y):
         if (x, y) in self.moves:
@@ -98,10 +101,10 @@ class Unit(object):
             if buff[1] > 1:
                 buffs.append((buff[0], buff[1] - 1))
                 self.buffs[0] = buffs
-                if self.cooldowns[0] > 0:
-                    self.cooldowns -= 1
-                if self.cooldowns[1] > 0:
-                    self.cooldowns -= 1
+                if self.cooldown[0] > 0:
+                    self.cooldown -= 1
+                if self.cooldown[1] > 0:
+                    self.cooldown -= 1
 
     def get_hp(self):
         return self.hp
@@ -110,5 +113,8 @@ class Unit(object):
         return self.hp / float(self.base_hp)
 
     def isDead(self):
-        return (self.hp <= 0)
+        return self.hp <= 0
+
+    def get_level(self):
+        return self.level
 

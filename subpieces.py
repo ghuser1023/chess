@@ -1,6 +1,8 @@
 # Contains the specific piece classes.
 
 from pieces import *
+import math
+
 
 class Pawn(Unit):
     def __init__(self):
@@ -17,11 +19,12 @@ class Pawn(Unit):
 
     def deal_damage(self, damage):
         local_unit_list = []
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
-                if checked_unit == None or checked_unit.side == self.side:
-                    local_unit_list.append(checked_unit)
+        for i in range(self.board.get_loc(self)[0] - 1, self.board.get_loc(self)[0] + 2):
+            for j in range(self.board.get_loc(self)[1] - 1, self.board.get_loc(self)[1] + 2):
+                if i >= 0 and i < 8 and j >= 0 and j < 8:
+                    checked_unit = self.board.get_unit(i, j)
+                    if checked_unit is None or checked_unit.side == self.side:
+                        local_unit_list.append(checked_unit)
         buff = len(local_unit_list) * 0.3 + 1
         Unit.deal_damage(self, damage / buff)
 
@@ -30,7 +33,7 @@ class Pawn(Unit):
         for i in range(-1, 2):
             for j in range(-1, 2):
                 checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
-                if checked_unit != None and checked_unit.side == self.side:
+                if checked_unit is not None and checked_unit.side == self.side:
                     num_local += 1
         buff = num_local * 0.3 + 1
         return buff * self.base_str
@@ -127,7 +130,7 @@ class King(Unit):
     def __init__(self):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-        Unit.__init__(self, 7, 40, 0, 3, moves, 100, "King")
+        Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King")
 
     def call_to_arms(self, x1, y1, x2, y2):
         if self.cooldown[0] == 0:
@@ -159,7 +162,7 @@ class Queen(Unit):
         for i in range(-8, 9):
             for j in range(-8, 9):
                 moves.append((i, j))
-        Unit.__init__(self, 7, 35, 0, 3, moves, 25, "Queen")
+        Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen")
 
     def subterfuge(self, target):
         if self.cooldown[0] == 0:

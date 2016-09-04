@@ -2,6 +2,7 @@
 
 from subpieces import *
 
+
 def initialize_board():
     white.other = black
     black.other = white
@@ -87,6 +88,7 @@ class Board(object):
             print("Defender's HP:", defender.get_hp())
             if defender.isDead():
                 self.remove_unit(defender)
+                attacker.gain_xp(defender.get_xp_drop())
             return True
         else:
             return False
