@@ -232,5 +232,9 @@ class Unit(object):
         Note: this method is used by graphics to assign unit thumbnails, so do not change naively.
         :return: a string representation of this unit.
         """
+        if self.name == "Knight":
+            return "n" + str(self.level)
+        if self.name == "Fort":
+            return "r" + str(self.level)
         return self.name[0].lower() + str(self.level)
 

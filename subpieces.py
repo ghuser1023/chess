@@ -59,7 +59,7 @@ class Fort(Unit):
         for i in range(-8, 9):
             moves.append((0, i))
             moves.append((i, 0))
-        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Rook", ["aerial_defense"])
+        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"])
 
     # Note: missing the fortify ability (must be implemented in Piece's deal_damage)
 
