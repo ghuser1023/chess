@@ -7,6 +7,14 @@ window = pyglet.window.Window(w_length, w_height)
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
+    """
+    Processes a mouse press (Pyglet method)
+    :param x: the window pixel x-location
+    :param y: the window pixel y-location
+    :param button: the mouse button
+    :param modifiers: ???
+    :return: None
+    """
     if button == mouse.LEFT:
         print(state)
         if state[0] == "working":
@@ -30,12 +38,18 @@ def on_mouse_press(x, y, button, modifiers):
             else:
                 abil = Utils.loc_to_ability(x, y)
                 if abil is not None:
-                    Selections.select_ability(loc)
+                    Selections.select_ability(abil)
 
 
 class Draw:
     @staticmethod
     def draw_white_rect(x, y):
+        """
+        Draws a white square for the board coordinates (x, y).
+        :param x: the board x-location.
+        :param y: the board y-location.
+        :return: None
+        """
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
             ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
@@ -43,6 +57,12 @@ class Draw:
 
     @staticmethod
     def draw_black_rect(x, y):
+        """
+        Draws a black square for the board coordinates (x, y).
+        :param x: the board x-location.
+        :param y: the board y-location.
+        :return: None
+        """
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
             ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
@@ -50,6 +70,10 @@ class Draw:
 
     @staticmethod
     def draw_board():
+        """
+        Draws the board itself.
+        :return: None
+        """
         for x in range(1, 9, 2):
             for y in range(1, 9, 2):
                 Draw.draw_black_rect(x, y)
@@ -63,6 +87,11 @@ class Draw:
 
     @staticmethod
     def draw_pieces():
+        """
+        Draws all the pieces.
+        Also calls the relevant HUD methods for each piece.
+        :return: None
+        """
         for piece in board.get_pieces():
             side = str(piece.side)[0]
             typ = str(piece)[:1]
@@ -83,6 +112,10 @@ class Draw:
 
     @staticmethod
     def draw_ability_images():
+        """
+        Draws the ability images.
+        :return: None
+        """
         if len(cur_abils) > 0:
             abilityimages[cur_abils[0]].blit(abil_init_width, top_bar - abil_bot_dist)
             label = pyglet.text.Label(str(state[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
@@ -98,6 +131,10 @@ class Draw:
 
     @staticmethod
     def draw_message():
+        """
+        Draws the user-friendly eror message.
+        :return: None
+        """
         if Selections.error != "":
             label = pyglet.text.Label(Selections.error, font_name = 'Courier New', font_size = 11, bold = True,
                                       x = w_length // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
@@ -105,6 +142,12 @@ class Draw:
 
     @staticmethod
     def draw_exp(cur, max):
+        """
+        Draws the experience statistics in the HUD.
+        :param cur: the current experience of the unit.
+        :param max: the maximum experience of the unit.
+        :return: None
+        """
         label = pyglet.text.Label(str(cur), font_name='Courier New', font_size=18, bold=True,
                                   x = exp_init_width, y = exp_init_height, anchor_x='center', anchor_y='bottom')
         label.draw()
@@ -114,6 +157,13 @@ class Draw:
 
     @staticmethod
     def draw_bar(percent, color, height):
+        """
+        Draws a (health/morale) bar.
+        :param percent: the percentage that the bar is filled to.
+        :param color: the color of the bar.
+        :param height: the height of the bar.
+        :return:
+        """
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
              ("v2i", (sq_size, height, sq_size, height + bar_width,
                       sq_size + bar_len, height + bar_width, sq_size + bar_len, height)),
@@ -129,6 +179,10 @@ class Draw:
 
 @window.event
 def on_draw():
+    """
+    Draws the window (Pyglet method).
+    :return: None
+    """
     window.clear()
     pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0,0,0,w_height,w_length,w_height,w_length,0)), ("c3B", (127, 127, 127)*4))
     Draw.draw_board()
@@ -137,4 +191,5 @@ def on_draw():
     Draw.draw_message()
 
 
-pyglet.app.run()
+pyglet.app.run() # Runs the entire thing
+

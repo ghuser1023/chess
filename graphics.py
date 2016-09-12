@@ -3,28 +3,29 @@
 from classes import *
 import pyglet
 
-sq_size = 40
-p_size = 28
+sq_size = 40  # the size of each square on the board
+p_size = 28  # the size of each piece thumbnail
 pieceimages = {}
 abilityimages = {}
 
-w_length = 400
-w_height = 460
-top_bar = 60
+w_length = 400  # the length of the window
+w_height = 460  # the height of the window
+top_bar = 60  # the distance from the top of the window to the board
+              # also used to calibrate the HUD, somehow
 
-piece_calib = 46
-abil_bot_dist = 6
-abil_width_dist = 50
-abil_init_width = 276
-msg_height = w_height - 20
+piece_calib = 46  # used to calibrate the drawing of pieces on the board
+abil_bot_dist = 6  # the vertical downwards distance of the abilities from the top of the HUD
+abil_width_dist = 50  # the distance between the two ability thumbnails (left edge to left edge)
+abil_init_width = 276  # the distance to the left edge of the first ability
+msg_height = w_height - 20  # the height at which messages are drawn at
 
-bar_len = 150
-bar_width = 15
-bar_height = 50
-name_height = 80
+bar_len = 150  # the length of the health bar
+bar_width = 15  # the width of the health bar
+bar_height = 50  # the height of the health bar
+name_height = 80  # the height of the displayed name of the piece
 
-exp_init_width = 234
-exp_init_height = 50
+exp_init_width = 234  # the distance of the experience point statistic from the left edge
+exp_init_height = 50  # the height of the experience point statistic
 
 cur_abils = []
 cur_side = white
@@ -35,6 +36,12 @@ state = ["select_unit", None]
 class Utils:
     @staticmethod
     def loc_to_square(x, y):
+        """
+        Converts window pixels to board coordinates.
+        :param x: the x-location (in terms of window pixels)
+        :param y: the y-location (in terms of window pixels)
+        :return: the location (in terms of board coordinates)
+        """
         x //= sq_size
         y = (y - top_bar) // sq_size
         if x > 0 and y > 0:
@@ -43,14 +50,31 @@ class Utils:
 
     @staticmethod
     def loc_to_ability(x, y):
-        pass
-
+        """
+        Converts window pixels to abilities.
+        :param x: the x-location (in terms of window pixels)
+        :param y: the y-location (in terms of window pixels)
+        :return: the number of the ability selected
+        """
+        x -= abil_init_width
+        y -= top_bar - abil_bot_dist
+        if x >= 0 and y >= 0 and x < p_size and y < p_size:
+            return 0
+        x -= abil_width_dist
+        if x >= 0 and y >= 0 and x < p_size and y < p_size:
+            return 1
 
 class Selections:
     error = ""
 
     @staticmethod
     def select_unit(x, y):
+        """
+        Selects a unit on the screen.
+        :param x: the x-location (in terms of window pixels)
+        :param y: the y-location (in terms of window pixels)
+        :return: None
+        """
         loc = Utils.loc_to_square(x, y)
         if loc != None:
             unit = board.get_unit(loc[0], loc[1])
@@ -63,6 +87,14 @@ class Selections:
 
     @staticmethod
     def select_general(method, x, y, error):
+        """
+        A general selection method that calls a method (move or attack).
+        :param method: the method to be called (move or attack)
+        :param x: the board x-location
+        :param y: the board y-location
+        :param error: the method name string (used for the error message to be displayed upon failure)
+        :return: None
+        """
         global cur_side
         if state[1].get_side() == cur_side:
             worked = method(state[1], x, y)
@@ -79,24 +111,39 @@ class Selections:
 
     @staticmethod
     def select_move(loc):
+        """
+        Selects a certain move.
+        :param loc: the board location of the move destination
+        :return: None
+        """
         (a, b) = board.get_loc(state[1])
         (x, y) = loc
         Selections.select_general(board.move_unit, x - a, y - b, "move")
 
     @staticmethod
     def select_attack(loc):
+        """
+        Selects a certain attack.
+        :param loc: the board location of the attack target
+        :return: None
+        """
         if board.get_unit(loc[0], loc[1]).get_side() == state[1].get_side():
             Selections.error = "No friendly fire."
         else:
             Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
 
     @staticmethod
-    def select_ability(loc):
+    def select_ability(abil):
+        # ???
         pass
 
 class FileHandling():
     @staticmethod
     def import_abilities():
+        """
+        Imports all of the ability thumbnails. The names are important.
+        :return: None
+        """
         abilityimages["arrowstorm"] = pyglet.resource.image('abilities/Arrows.png')
         abilityimages["aerial_defense"] = pyglet.resource.image('abilities/Arrows.png')
         abilityimages["call_to_arms"] = pyglet.resource.image('abilities/Call to Arms.png')
@@ -110,6 +157,10 @@ class FileHandling():
 
     @staticmethod
     def import_images():
+        """
+        Imports all of the piece thumbnails. The names are important.
+        :return: None
+        """
         pieceimages["wr1"] = pyglet.resource.image('sprites/WFort1.png')
         pieceimages["wn1"] = pyglet.resource.image('sprites/WKnight1.png')
         pieceimages["wb1"] = pyglet.resource.image('sprites/WBishop1.png')
