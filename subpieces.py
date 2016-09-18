@@ -39,26 +39,10 @@ class Pawn(Unit):
         else:
             return "Ability not sufficiently cooled down."
 
-    def deal_damage(self, damage):
+    def str_buff(self):
         """
-        Overrides Unit's deal_damage to match the Pawn's solidarity ability.
-        :param damage: the damage to be dealt to this unit.
-        :return: None
-        """
-        local_unit_list = []
-        for i in range(self.board.get_loc(self)[0] - 1, self.board.get_loc(self)[0] + 2):
-            for j in range(self.board.get_loc(self)[1] - 1, self.board.get_loc(self)[1] + 2):
-                if i >= 0 and i < 8 and j >= 0 and j < 8:
-                    checked_unit = self.board.get_unit(i, j)
-                    if checked_unit is None or checked_unit.side == self.side:
-                        local_unit_list.append(checked_unit)
-        buff = len(local_unit_list) * 0.3 + 1
-        Unit.deal_damage(self, damage / buff)
-
-    def effective_strength(self):
-        """
-        Overrides Unit's effective_strength to match the Pawn's solidarity ability.
-        :return: None
+        Overrides Unit's str_buff to match the Pawn's solidarity ability.
+        :return: the buff given to this unit's strength.
         """
         num_local = 0
         for i in range(-1, 2):
@@ -67,7 +51,23 @@ class Pawn(Unit):
                 if checked_unit is not None and checked_unit.side == self.side:
                     num_local += 1
         buff = num_local * 0.3 + 1
-        return buff * self.base_str
+        buff *= Unit.str_buff(self)
+        return buff
+
+    def def_buff(self):
+        """
+        Overrides Unit's def_buff to match the Pawn's solidarity ability.
+        :return: the buff given to this unit's defense.
+        """
+        num_local = 0
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
+                if checked_unit is not None and checked_unit.side == self.side:
+                    num_local += 1
+        buff = num_local * 0.3 + 1
+        buff *= Unit.def_buff(self)
+        return buff
 
 
 class Fort(Unit):

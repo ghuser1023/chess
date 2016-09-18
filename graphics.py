@@ -9,9 +9,9 @@ pieceimages = {}
 abilityimages = {}
 
 w_length = 400  # the length of the window
-w_height = 460  # the height of the window
-top_bar = 60  # the distance from the top of the window to the board
-              # also used to calibrate the HUD, somehow
+w_height = 480  # the height of the window
+top_bar = 80  # the distance from the bottom of the window to the board
+hud_cal = 65  # used to calibrate the HUD
 
 piece_calib = 46  # used to calibrate the drawing of pieces on the board
 abil_bot_dist = 6  # the vertical downwards distance of the abilities from the top of the HUD
@@ -22,15 +22,20 @@ msg_height = w_height - 20  # the height at which messages are drawn at
 bar_len = 150  # the length of the health bar
 bar_width = 15  # the width of the health bar
 bar_height = 50  # the height of the health bar
+mbar_height = 30 # the height of the morale bar
 name_height = 80  # the height of the displayed name of the piece
 
 exp_init_width = 234  # the distance of the experience point statistic from the left edge
 exp_init_height = 50  # the height of the experience point statistic
 
-cur_abils = [] # the abilities that are currently displayed
-cur_side = white # the current side that has the move
-states = ["working", "select_unit", "unit_selected", "select_squares"] # all possible states
-state = ["select_unit", None, 0, [], -1] # the current state
+buff_height = top_bar - hud_cal - 0  # the height of the buff indicators
+buff_size = 18  # the size of the buff indicator square
+buff_dist = 90  # the distance between the buff indicators
+
+cur_abils = []  # the abilities that are currently displayed
+cur_side = white  # the current side that has the move
+states = ["working", "select_unit", "unit_selected", "select_squares"]  # all possible states
+state = ["select_unit", None, 0, [], -1]  # the current state
 
 
 class Utils:

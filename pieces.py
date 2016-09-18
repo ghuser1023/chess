@@ -1,5 +1,6 @@
 # This file contains the general unit class.
 
+
 class Unit(object):
     def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils):
         """
@@ -106,23 +107,36 @@ class Unit(object):
             self.level += 1
             self.level_multiplier = 1.25 / 1.1
 
-    def effective_strength(self):
+    def str_buff(self):
         """
-        :return: the effective attack strength of this unit.
+        :return: the buff given to this unit's strength.
         """
         buff = 1
         for x in self.buffs[0]:
             buff *= x[0]
-        return self.base_str * buff
+        return buff
+
+    def def_buff(self):
+        """
+        :return: the buff given to this unit's defense.
+        """
+        buff = 1
+        for x in self.buffs[1]:
+            buff *= x[0]
+        return buff
+
+    def effective_strength(self):
+        """
+        :return: the effective attack strength of this unit.
+        """
+        return self.base_str * self.str_buff()
 
     def deal_damage(self, damage):
         """
         :param damage: the damage to be dealt to this unit.
         :return: None
         """
-        buff = 1
-        for x in self.buffs[1]:
-            buff *= x[0]
+        buff = self.def_buff()
         self.hp -= (damage / buff)
         if self.hp < 0:
             self.hp = 0
@@ -208,6 +222,12 @@ class Unit(object):
         :return: the percentage of the total health this unit has. Used by graphics.
         """
         return self.hp / float(self.base_hp)
+
+    def get_maxhp(self):
+        """
+        :return: the maximum amount of health this unit has.
+        """
+        return self.base_hp
 
     def isDead(self):
         """

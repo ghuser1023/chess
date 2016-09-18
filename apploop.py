@@ -96,8 +96,7 @@ class Draw:
     @staticmethod
     def draw_pieces():
         """
-        Draws all the pieces.
-        Also calls the relevant HUD methods for each piece.
+        Draws all the pieces and calls the relevant HUD method.
         :return: None
         """
         for piece in board.get_pieces():
@@ -107,16 +106,49 @@ class Draw:
             locx = board.get_loc(piece)[0]*sq_size + piece_calib
             locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
             if piece == state[1] and piece != None:
-                label = pyglet.text.Label(piece.get_name(), font_name='Courier New', font_size=14, bold = True,
-                                          x = sq_size, y = name_height, anchor_x='left', anchor_y='center')
-                label.draw()
-                Draw.draw_bar(piece.get_perhp(), (0, 255, 0), bar_height)
-                Draw.draw_exp(piece.get_cur_xp(), piece.get_max_xp())
-                pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-                     ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
-                            locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
-                     ("c3B", (0, 255, 0) * 4))
+                Draw.draw_active(piece, locx, locy)
             pieceimages[side + typ + str(lvl)].blit(locx, locy)
+        if state[1] is None:
+            Draw.draw_passive()
+
+    @staticmethod
+    def draw_active(piece, locx, locy):
+        """
+        Draws the active HUD.
+        :param piece: the piece selected.
+        :param locx: the x-location of the piece.
+        :param locy: the y-location of the piece.
+        :return: None
+        """
+        # Drawing the name of the piece
+        label = pyglet.text.Label(piece.get_name(), font_name='Courier New', font_size=14, bold=True,
+                                  x=sq_size, y=top_bar + name_height - hud_cal, anchor_x='left',
+                                  anchor_y='center')
+        label.draw()
+        # Drawing the health bar
+        Draw.draw_bar(piece.get_perhp(), (0, 255, 0), bar_height)
+        text = str(piece.get_hp()) + "/" + str(piece.get_maxhp())
+        label = pyglet.text.Label(text, font_name='Courier New', font_size=10, bold=False,
+                                  x=sq_size + bar_len // 2, y=top_bar + bar_height + bar_width // 2 - hud_cal,
+                                  anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        label.draw()
+        # Drawing the morale bar
+        Draw.draw_bar(board.get_morale(piece), (125, 125, 255), mbar_height)
+        text = str(int(board.get_morale(piece) * 100)) + "/100"
+        label = pyglet.text.Label(text, font_name='Courier New', font_size=10, bold=False,
+                                  x=sq_size + bar_len // 2, y=top_bar + mbar_height + bar_width // 2 - hud_cal,
+                                  anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        label.draw()
+        # Drawing the buff indicators
+        Draw.draw_buffs(piece.str_buff(), (255, 200, 125), sq_size)
+        Draw.draw_buffs(piece.def_buff(), (200, 200, 255), sq_size + buff_dist)
+        # Drawing the experience
+        Draw.draw_exp(piece.get_cur_xp(), piece.get_max_xp())
+        # Drawing the "piece selected" indicator (green)
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                             ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
+                                      locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
+                             ("c3B", (0, 255, 0) * 4))
 
     @staticmethod
     def draw_ability_images():
@@ -157,10 +189,12 @@ class Draw:
         :return: None
         """
         label = pyglet.text.Label(str(cur), font_name='Courier New', font_size=18, bold=True,
-                                  x = exp_init_width, y = exp_init_height, anchor_x='center', anchor_y='bottom')
+                                  x = exp_init_width, y=top_bar + exp_init_height - hud_cal, anchor_x='center',
+                                  anchor_y='bottom')
         label.draw()
         label = pyglet.text.Label("\\" + str(max), font_name='Courier New', font_size=12, bold=True,
-                                  x = exp_init_width, y = exp_init_height, anchor_x='center', anchor_y='top')
+                                  x = exp_init_width, y=top_bar + exp_init_height - hud_cal, anchor_x='center',
+                                  anchor_y='top')
         label.draw()
 
     @staticmethod
@@ -170,8 +204,9 @@ class Draw:
         :param percent: the percentage that the bar is filled to.
         :param color: the color of the bar.
         :param height: the height of the bar.
-        :return:
+        :return: None
         """
+        height += top_bar - hud_cal
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
              ("v2i", (sq_size, height, sq_size, height + bar_width,
                       sq_size + bar_len, height + bar_width, sq_size + bar_len, height)),
@@ -184,6 +219,50 @@ class Draw:
              ("v2i", (sq_size + 1, height + 1, sq_size + 1, height + bar_width - 1,
                       sq_size-1+int(bar_len*percent), height+bar_width-1, sq_size-1+int(bar_len*percent), height+1)),
              ("c3B", color * 4))
+
+    @staticmethod
+    def draw_buffs(multiplier, color, offset):
+        """
+        Draws a (strength/defense) buff indicator.
+        :param multiplier: the current buff multiplier.
+        :param color: the color of the buff indicator.
+        :param offset: the x-offset of the buff.
+        :return: None
+        """
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+             ("v2i", (offset, buff_height, offset, buff_height + buff_size,
+                      offset + buff_size, buff_height + buff_size, offset + buff_size, buff_height)),
+             ("c3B", color * 4))
+        mult = str("x{:.2f}".format(multiplier))
+        label = pyglet.text.Label(mult, font_name='Courier New', font_size=11, bold=True,
+                                  x=offset + buff_size*3 // 2, y=buff_height + buff_size // 2, anchor_x='left',
+                                  anchor_y='center')
+
+        label.draw()
+
+    @staticmethod
+    def draw_passive():
+        """
+        Draws a "no unit selected" empty HUD.
+        :return: None
+        """
+        width1 = sq_size
+        width2 = w_length - sq_size
+        height1 = buff_height + 10
+        height2 = name_height + 20
+        th = 4
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                 ("v2i", (width1, height1, width1, height2, width2, height2, width2, height1)),
+                 ("c3B", (255, 255, 255) * 4))
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                 ("v2i", (width1 + th, height1 + th, width1 + th, height2 - th,
+                          width2 - th, height2 - th, width2 - th, height1 + th)),
+                 ("c3B", (127, 127, 127) * 4))
+        label = pyglet.text.Label("No unit selected.", font_name='Courier New', font_size=12, bold=True,
+                                  x=(width1 + width2) // 2, y=(height1 + height2) // 2, anchor_x='center',
+                                  anchor_y='center')
+        label.draw()
+
 
 @window.event
 def on_draw():

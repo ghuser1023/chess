@@ -70,6 +70,7 @@ class Board(object):
         :param y: the y-location of the unit
         :return: None
         """
+        unit.get_side().add_unit(unit)
         self.board[x][y] = unit
         self.units[unit] = (x, y)
 
@@ -80,7 +81,10 @@ class Board(object):
         :param y: the y-location to be searched
         :return: the unit at target location
         """
-        return self.board[x][y]
+        if self.valid(x, y):
+            return self.board[x][y]
+        else:
+            return None
 
     def get_loc(self, unit):
         """
@@ -99,6 +103,7 @@ class Board(object):
         (x, y) = self.units[unit]
         self.board[x][y] = None
         self.units.pop(unit)
+        unit.get_side().remove_unit(unit)
 
     def qualify_move(self, unit, loc):
         """
@@ -211,13 +216,52 @@ class Board(object):
         """
         return list(self.units.keys())
 
+    def get_morale(self, unit):
+        """
+        Calculates the morale of a certain unit based on adjacent pieces, piece health, and the king.
+        :param unit: the unit whose morale will be calculated.
+        :return: the morale of that unit as a percentage.
+        """
+        health = unit.get_perhp()
+        num_local = 0
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if self.valid(self.get_loc(unit)[0] + i, self.get_loc(unit)[1] + j):
+                    checked_unit = self.get_unit(self.get_loc(unit)[0] + i, self.get_loc(unit)[1] + j)
+                    if checked_unit is not None:
+                        if checked_unit.get_side() == unit.get_side():
+                            num_local += 1
+                        if checked_unit.get_side() != unit.get_side():
+                            num_local -= 1
+        num_local *= 0.05
+        morale = 0.5 + (health - 0.5)/2 + num_local
+        if not unit.get_side().king_alive():
+            morale -= 0.25
+        if morale > 1:
+            morale = 1
+        if morale < 0:
+            morale = 0
+        return morale
+
 
 class Side(object):
     def __init__(self, name):
         self.units = []
-        self.morale = 100
         self.other = None
         self.name = name
+        self.has_king = False
+
+    def king_alive(self):
+        """
+        :return: whether or not the king is still alive.
+        """
+        return self.has_king
+
+    def get_num_units(self):
+        """
+        :return: the total number of units still alive.
+        """
+        return len(self.units)
 
     def add_opponent(self, other):
         """
@@ -246,6 +290,8 @@ class Side(object):
         :return: None
         """
         self.units.append(unit)
+        if type(unit) == King:
+            self.has_king = True
 
     def remove_unit(self, unit):
         """
@@ -254,40 +300,8 @@ class Side(object):
         :return: None
         """
         self.units.pop(unit)
-
-    def add_morale(self, morale):
-        """
-        Adds morale to this side
-        :param morale: the morale to be added
-        :return: None
-        """
-        self.morale += morale
-        if self.morale > 100:
-            self.morale = 100
-        if self.morale < 0:
-            self.morale = 0
-
-    def get_obdedience(self):
-        """
-        :return: a value dictating the possibility of a unit's loyalty.
-        """
-        if self.morale >= 50:
-            return 1
-        else:
-            return 0.02 * self.morale
-
-    def get_num_abilities(self):
-        """
-        :return: the number of abilities that can be used on any given turn.
-        """
-        num = 0
-        if self.morale >= 15:
-            num += 1
-        if self.morale >= 40:
-            num += 1
-        if self.morale >= 80:
-            num += 1
-        return num
+        if type(unit) == King:
+            self.has_king = False
 
     def __str__(self):
         """
