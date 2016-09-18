@@ -1,4 +1,4 @@
-# This file contains graphics, utilities, and constants.
+# This file contains utilities and constants.
 
 from classes import *
 import pyglet
@@ -27,10 +27,10 @@ name_height = 80  # the height of the displayed name of the piece
 exp_init_width = 234  # the distance of the experience point statistic from the left edge
 exp_init_height = 50  # the height of the experience point statistic
 
-cur_abils = []
-cur_side = white
-states = ["working", "select_unit", "unit_selected"]
-state = ["select_unit", None]
+cur_abils = [] # the abilities that are currently displayed
+cur_side = white # the current side that has the move
+states = ["working", "select_unit", "unit_selected", "select_squares"] # all possible states
+state = ["select_unit", None, 0, [], -1] # the current state
 
 
 class Utils:
@@ -61,7 +61,7 @@ class Utils:
         if x >= 0 and y >= 0 and x < p_size and y < p_size:
             return 0
         x -= abil_width_dist
-        if x >= 0 and y >= 0 and x < p_size and y < p_size:
+        if x >= 0 and y >= 0 and x < p_size and y < p_size and state[1].num_abils() > 1:
             return 1
 
 class Selections:
@@ -133,9 +133,29 @@ class Selections:
             Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
 
     @staticmethod
-    def select_ability(abil):
-        # ???
-        pass
+    def select_ability():
+        """
+        Selects a certain ability.
+        :return: None
+        """
+        abil = state[4]
+        ability = state[1].abilities()[abil]
+        squares = state[3]
+        global cur_side
+        if state[1].get_side() == cur_side:
+            error = ability(state[1], squares)
+            if error == "":
+                state[0] = "unit_selected"
+                state[2] = 0
+                state[4] = -1
+                state[3].clear()
+            else:
+                Selections.error = error
+                state[2] = state[1].get_num_input(state[4])
+                state[3].clear()
+        else:
+            Selections.error = "It is " + cur_side.get_name() + " to move."
+
 
 class FileHandling():
     @staticmethod

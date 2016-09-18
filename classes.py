@@ -100,6 +100,18 @@ class Board(object):
         self.board[x][y] = None
         self.units.pop(unit)
 
+    def qualify_move(self, unit, loc):
+        """
+        Alters the delta-x and delta-y of a unit to correct for black/white discrepancies.
+        :param unit: the unit to be moved/attacked
+        :param loc: the delta-(x, y) of the move/attack
+        :return: (x, y) if white; (x, -y) if black
+        """
+        if unit.get_side() == black:
+            return (loc[0], -loc[1])
+        else:
+            return loc
+
     def move_unit(self, unit, x, y):
         """
         Moves a unit on the board.
@@ -131,14 +143,13 @@ class Board(object):
         if (attacker.get_side() == white and attacker.check_attack(x - a, y - b)) or (
                         attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
             defender.deal_damage(attacker.effective_strength())
-            print("An attack occured!")
-            print("Defender's HP:", defender.get_hp())
             if defender.isDead():
                 self.remove_unit(defender)
                 attacker.gain_xp(defender.get_xp_drop())
             return True
         else:
             return False
+
 
     def valid(self, x, y):
         """

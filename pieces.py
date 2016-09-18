@@ -193,9 +193,9 @@ class Unit(object):
                 buffs.append((buff[0], buff[1] - 1))
                 self.buffs[0] = buffs
                 if self.cooldown[0] > 0:
-                    self.cooldown -= 1
+                    self.cooldown[0] -= 1
                 if self.cooldown[1] > 0:
-                    self.cooldown -= 1
+                    self.cooldown[1] -= 1
 
     def get_hp(self):
         """
@@ -221,11 +221,25 @@ class Unit(object):
         """
         return self.level
 
+    def num_abils(self):
+        """
+        :return: the number of abilities this unit has.
+        """
+        return len(self.abils)
+
     def abilities(self):
         """
         :return: a copy of this unit's abilities.
         """
         return self.abils[:]
+
+    def get_num_input(self, abil):
+        """
+        This method should be overriden in every piece class.
+        :param abil: the number of the ability (0 or 1).
+        :return: the number of input squares necessary.
+        """
+        pass
 
     def __str__(self):
         """

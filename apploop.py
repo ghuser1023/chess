@@ -5,6 +5,7 @@ from graphics import *
 
 window = pyglet.window.Window(w_length, w_height)
 
+
 @window.event
 def on_mouse_press(x, y, button, modifiers):
     """
@@ -38,7 +39,14 @@ def on_mouse_press(x, y, button, modifiers):
             else:
                 abil = Utils.loc_to_ability(x, y)
                 if abil is not None:
-                    Selections.select_ability(abil)
+                    state[2] = state[1].get_num_input(abil)
+                    state[4] = abil
+        elif state[0] == "select_squares":
+            loc = Utils.loc_to_square(x, y)
+            if loc is not None:
+                state[3].append(loc)
+            if len(state[3]) == state[2]:
+                Selections.select_ability()
 
 
 class Draw:
@@ -189,7 +197,4 @@ def on_draw():
     Draw.draw_pieces()
     Draw.draw_ability_images()
     Draw.draw_message()
-
-
-pyglet.app.run() # Runs the entire thing
 
