@@ -7,7 +7,7 @@ import math
 class Pawn(Unit):
     def __init__(self):
         moves = [(0, 1)]
-        Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"])
+        Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"], [self.arrowstorm])
 
     def get_num_input(self, abil):
         """
@@ -26,9 +26,9 @@ class Pawn(Unit):
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
             if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - target.board.get_loc(self)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - target.board.get_loc(self)[1])
-                if xDifference <= 2 or yDifference <= 2:
+                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                if xDifference <= 2 and yDifference <= 2:
                     target.deal_damage(math.ceil(.75 * self.effective_strength()))
                     self.cooldown[0] = 4
                     return ""
@@ -44,13 +44,13 @@ class Pawn(Unit):
         Overrides Unit's str_buff to match the Pawn's solidarity ability.
         :return: the buff given to this unit's strength.
         """
-        num_local = 0
+        num_local = -1
         for i in range(-1, 2):
             for j in range(-1, 2):
                 checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
-                if checked_unit is not None and checked_unit.side == self.side:
+                if checked_unit is not None and checked_unit.side == self.side and type(checked_unit) == type(self):
                     num_local += 1
-        buff = num_local * 0.3 + 1
+        buff = num_local * 0.2 + 1
         buff *= Unit.str_buff(self)
         return buff
 
@@ -59,13 +59,13 @@ class Pawn(Unit):
         Overrides Unit's def_buff to match the Pawn's solidarity ability.
         :return: the buff given to this unit's defense.
         """
-        num_local = 0
+        num_local = -1
         for i in range(-1, 2):
             for j in range(-1, 2):
                 checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
-                if checked_unit is not None and checked_unit.side == self.side:
+                if checked_unit is not None and checked_unit.side == self.side and type(checked_unit) == type(self):
                     num_local += 1
-        buff = num_local * 0.3 + 1
+        buff = num_local * 0.2 + 1
         buff *= Unit.def_buff(self)
         return buff
 
@@ -76,7 +76,7 @@ class Fort(Unit):
         for i in range(-8, 9):
             moves.append((0, i))
             moves.append((i, 0))
-        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"])
+        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"], [self.aerial_defense])
 
     # Note: missing the fortify ability (must be implemented in Piece's deal_damage)
 
@@ -97,9 +97,9 @@ class Fort(Unit):
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
             if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - target.board.get_loc(self)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - target.board.get_loc(self)[1])
-                if xDifference <= 2 or yDifference <= 2:
+                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                if xDifference <= 2 and yDifference <= 2:
                     target.deal_damage(math.ceil(.75 * self.effective_strength()))
                     self.cooldown[0] = 4
                     return ""
@@ -114,8 +114,7 @@ class Fort(Unit):
 class Knight(Unit):
     def __init__(self):
         moves = [(-1, -2), (-1, 2), (-2, -1), (-2, 1), (1, -2), (1, 2), (2, -1), (2, 1)]
-        Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"])
-        self.chivalrous = (False, 0)
+        Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"], [self.charge, self.chivalry])
 
     def get_num_input(self, abil):
         """
@@ -125,7 +124,7 @@ class Knight(Unit):
         if abil == 0:
             return 1
         else:
-            return 0
+            return 1
 
     def charge(self, squares):
         """
@@ -138,12 +137,12 @@ class Knight(Unit):
         """
         moveLoc = squares[0]
         pos = self.board.get_loc(self)
-        delta = self.board.check_loc(self, (moveLoc[0] - pos[0], moveLoc[1] - pos[1]))
+        delta = self.board.qualify_move(self, (moveLoc[0] - pos[0], moveLoc[1] - pos[1]))
         if self.cooldown[0] == 0:
             if self.check_move(delta[0], delta[1]):
                 if self.board.get_unit(moveLoc[0], moveLoc[1]) is None:
-                    self.buff_attack(1.25, 1)
-                    self.board.move_unit(moveLoc[0], moveLoc[1])
+                    self.buff_attack(2, 1)
+                    self.board.move_unit(self, moveLoc[0] - pos[0], moveLoc[1] - pos[1])
                     self.cooldown[0] = 10
                     return ""
                 else:
@@ -160,12 +159,20 @@ class Knight(Unit):
         :param squares: should contain all the data necessary for the following parameters: [None]
         :return: the relevant error message.
         """
-        squares.clear()
+        target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[1] == 0:
-            self.buff_health(1.2, 2)
-            self.chivalrous = (True, 2)
-            self.cooldown[1] = 10
-            return ""
+            if target is not None:
+                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                if xDifference <= 2 and yDifference <= 2 and xDifference != 0 and yDifference != 0:
+                    target.add_protected(self)
+                    self.buff_health(1.5, 2)
+                    self.cooldown[1] = 10
+                    return ""
+                else:
+                    return "Target not in range."
+            else:
+                return "Target does not exist."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -176,7 +183,7 @@ class Bishop(Unit):
         for i in range(-8, 9):
             moves.append((i, i))
             moves.append((-i, i))
-        Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop", ["regeneration", "piety"])
+        Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop", ["regeneration", "piety"], [self.regeneration, self.piety])
 
     def get_num_input(self, abil):
         """
@@ -217,12 +224,12 @@ class Bishop(Unit):
             local_unit_list = []
             for i in range(-1, 2):
                 for j in range(-1, 2):
-                    checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc[1] + j)
-                    if checked_unit.side == self.side:
+                    checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
+                    if checked_unit is not None and checked_unit.side == self.side:
                         local_unit_list.append(checked_unit)
             for unit in local_unit_list:
-                unit.boost_health(1.2, 3)
-                unit.boost_attack(1.1, 3)
+                unit.buff_health(1.2, 3)
+                unit.buff_attack(1.1, 3)
             self.cooldown[1] = 12
             return ""
         else:
@@ -233,7 +240,7 @@ class King(Unit):
     def __init__(self):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-        Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King", ["call_to_arms", "rally"])
+        Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King", ["call_to_arms", "rally"], [self.call_to_arms, self.rally])
 
     def get_num_input(self, abil):
         """
@@ -258,9 +265,13 @@ class King(Unit):
         (x1, y1) = squares[0]
         (x2, y2) = squares[1]
         if self.cooldown[0] == 0:
-            if self.board.get_unit(x1, y1) is not None and self.board.get_unit(x2, y2) is not None:
+            if self.board.get_unit(x1, y1) is None and self.board.get_unit(x2, y2) is None:
                 mercenary1 = Pawn()
                 mercenary2 = Pawn()
+                mercenary1.set_board(self.board)
+                mercenary1.set_side(self.side)
+                mercenary2.set_board(self.board)
+                mercenary2.set_side(self.side)
                 self.board.add_unit(mercenary1, x1, y1)
                 self.board.add_unit(mercenary2, x2, y2)
                 self.side.add_unit(mercenary1)
@@ -275,16 +286,14 @@ class King(Unit):
 
     def rally(self, squares):
         """
-        Increases the morale of this unit's side.
-        Effectiveness decreases with repeated uses.
+        Increases the morale of this unit's side for a few turns.
         :param squares: should contain all the data necessary for the following parameters: [None]
         :return: the relevant error message.
         """
         squares.clear()
         if self.cooldown[1] == 0:
-            self.side.add_morale(self.rally_amt)
-            self.rally_amt = (self.rally_amt + 1) // 2
-            self.cooldown[1] = 12
+            self.side.rally()
+            self.cooldown[1] = 20
             return ""
         else:
             return "Ability not sufficiently cooled down."
@@ -292,12 +301,11 @@ class King(Unit):
 
 class Queen(Unit):
     def __init__(self):
-        self.influence_active = False
         moves = []
         for i in range(-8, 9):
             for j in range(-8, 9):
                 moves.append((i, j))
-        Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"])
+        Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"], [self.subterfuge, self.influence])
 
     def get_num_input(self, abil):
         """
@@ -319,11 +327,11 @@ class Queen(Unit):
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
             if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - target.board.get_loc(self)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - target.board.get_loc(self)[1])
-                if xDifference <= 5 or yDifference <= 5:
-                    target.buff_attack(.75, 3)
-                    target.deal_damage(math.ceil(.8 * self.effective_strength()))
+                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                if xDifference <= 5 and yDifference <= 5:
+                    target.buff_attack(.5, 3)
+                    target.deal_damage(math.ceil(.5 * self.effective_strength()))
                     self.cooldown[0] = 16
                     return ""
                 else:
@@ -342,8 +350,8 @@ class Queen(Unit):
         """
         squares.clear()
         if self.cooldown[1] == 0:
-            self.influence_active = True
-            self.cooldown[0] = 26
+            self.side.influence()
+            self.cooldown[1] = 26
             return ""
         else:
             return "Ability not sufficiently cooled down."

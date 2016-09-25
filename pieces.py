@@ -2,7 +2,7 @@
 
 
 class Unit(object):
-    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils):
+    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils, mabils):
         """
         :param strength: the default attack stat of this unit.
         :param hp: the maximum health value of this unit.
@@ -13,6 +13,7 @@ class Unit(object):
         :param name: the type of this piece. IMPORTANT: not to be confused with the return of get_name,
                      which returns a string used by graphics.
         :param abils: the list of abilities this unit has.
+        :param mabils: the list of ability methods this unit has.
         """
         self.base_str = strength
         self.base_hp = hp
@@ -30,6 +31,23 @@ class Unit(object):
         self.value = value
         self.name = name
         self.abils = abils
+        self.mabils = mabils
+        self.protected = [None, 2]
+
+    def get_protected(self):
+        """
+        :return: whether or not this unit is protected by chivalry.
+        """
+        return self.protected[0] is not None
+
+    def add_protected(self, unit):
+        """
+        Causes this unit to become protected by the Knight's chivalrous ability.
+        :param unit: the knight in question
+        :return: None
+        """
+        self.protected[0] = unit
+        self.protected[1] = 2
 
     def get_xp_drop(self):
         """
@@ -136,10 +154,15 @@ class Unit(object):
         :param damage: the damage to be dealt to this unit.
         :return: None
         """
-        buff = self.def_buff()
-        self.hp -= (damage / buff)
-        if self.hp < 0:
-            self.hp = 0
+        if self.protected[0] is not None:
+            self.protected[0].deal_damage(damage)
+        else:
+            buff = self.def_buff()
+            self.hp -= (damage / buff)
+            if self.hp < 0:
+                self.hp = 0
+                self.board.remove_unit(self)
+                self.side.remove_unit(self)
 
     def heal_damage(self, health):
         """
@@ -205,11 +228,20 @@ class Unit(object):
         for buff in self.buffs[0]:
             if buff[1] > 1:
                 buffs.append((buff[0], buff[1] - 1))
-                self.buffs[0] = buffs
-                if self.cooldown[0] > 0:
-                    self.cooldown[0] -= 1
-                if self.cooldown[1] > 0:
-                    self.cooldown[1] -= 1
+        self.buffs[0] = buffs
+        buffs = []
+        for buff in self.buffs[1]:
+            if buff[1] > 1:
+                buffs.append((buff[0], buff[1] - 1))
+        self.buffs[1] = buffs
+        if self.cooldown[0] > 0:
+            self.cooldown[0] -= 1
+        if self.cooldown[1] > 0:
+            self.cooldown[1] -= 1
+        if self.protected[1] > 1:
+            self.protected[1] -= 1
+        else:
+            self.protected = [None, 0]
 
     def get_hp(self):
         """
@@ -252,6 +284,12 @@ class Unit(object):
         :return: a copy of this unit's abilities.
         """
         return self.abils[:]
+
+    def abil_methods(self):
+        """
+        :return: a copy of this unit's ability methods.
+        """
+        return self.mabils[:]
 
     def get_num_input(self, abil):
         """

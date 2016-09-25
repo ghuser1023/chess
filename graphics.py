@@ -105,6 +105,7 @@ class Selections:
             worked = method(state[1], x, y)
             if worked:
                 cur_side = cur_side.get_opponent()
+                board.end_turn()
                 state[0] = "select_unit"
                 state[1] = None
                 cur_abils.clear()
@@ -144,11 +145,11 @@ class Selections:
         :return: None
         """
         abil = state[4]
-        ability = state[1].abilities()[abil]
+        ability = state[1].abil_methods()[abil]
         squares = state[3]
         global cur_side
         if state[1].get_side() == cur_side:
-            error = ability(state[1], squares)
+            error = ability(squares)
             if error == "":
                 state[0] = "unit_selected"
                 state[2] = 0

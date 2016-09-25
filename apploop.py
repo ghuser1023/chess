@@ -39,14 +39,25 @@ def on_mouse_press(x, y, button, modifiers):
             else:
                 abil = Utils.loc_to_ability(x, y)
                 if abil is not None:
-                    state[2] = state[1].get_num_input(abil)
-                    state[4] = abil
+                    if state[1].get_num_input(abil) == 0:
+                        Selections.select_ability()
+                    else:
+                        state[0] = "select_squares"
+                        state[2] = state[1].get_num_input(abil)
+                        state[4] = abil
         elif state[0] == "select_squares":
-            loc = Utils.loc_to_square(x, y)
-            if loc is not None:
-                state[3].append(loc)
-            if len(state[3]) == state[2]:
-                Selections.select_ability()
+            abil = Utils.loc_to_ability(x, y)
+            if abil is not None:
+                state[0] = "unit_selected"
+                state[2] = 0
+                state[4] = -1
+                state[3].clear()
+            else:
+                loc = Utils.loc_to_square(x, y)
+                if loc is not None:
+                    state[3].append(loc)
+                if len(state[3]) == state[2]:
+                    Selections.select_ability()
 
 
 class Draw:
@@ -105,7 +116,13 @@ class Draw:
             lvl = piece.get_level()
             locx = board.get_loc(piece)[0]*sq_size + piece_calib
             locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
-            if piece == state[1] and piece != None:
+            # Drawing the "piece activated by chivalry" indicator (yellow)
+            if piece.get_protected():
+                pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                                     ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
+                                              locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
+                                     ("c3B", (255, 255, 0) * 4))
+            if piece == state[1] and piece is not None:
                 Draw.draw_active(piece, locx, locy)
             pieceimages[side + typ + str(lvl)].blit(locx, locy)
         if state[1] is None:
@@ -127,7 +144,7 @@ class Draw:
         label.draw()
         # Drawing the health bar
         Draw.draw_bar(piece.get_perhp(), (0, 255, 0), bar_height)
-        text = str(piece.get_hp()) + "/" + str(piece.get_maxhp())
+        text = str("{:.1f}".format(piece.get_hp())) + "/" + str("{:.1f}".format(piece.get_maxhp()))
         label = pyglet.text.Label(text, font_name='Courier New', font_size=10, bold=False,
                                   x=sq_size + bar_len // 2, y=top_bar + bar_height + bar_width // 2 - hud_cal,
                                   anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
@@ -156,6 +173,13 @@ class Draw:
         Draws the ability images.
         :return: None
         """
+        if state[4] != -1:
+            x = abil_init_width + abil_width_dist * state[4]
+            y = top_bar - abil_bot_dist
+            pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                                 ("v2i", (x - 2, y - 2, x - 2, y + p_size + 2,
+                                          x + p_size + 2, y + p_size + 2, x + p_size + 2, y - 2)),
+                                 ("c3B", (255, 127, 63) * 4))
         if len(cur_abils) > 0:
             abilityimages[cur_abils[0]].blit(abil_init_width, top_bar - abil_bot_dist)
             label = pyglet.text.Label(str(state[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
@@ -168,6 +192,7 @@ class Draw:
                                       x=abil_init_width + abil_width_dist + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
                                       anchor_x='center', anchor_y='center')
             label.draw()
+
 
     @staticmethod
     def draw_message():

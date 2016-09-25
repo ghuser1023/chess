@@ -70,7 +70,6 @@ class Board(object):
         :param y: the y-location of the unit
         :return: None
         """
-        unit.get_side().add_unit(unit)
         self.board[x][y] = unit
         self.units[unit] = (x, y)
 
@@ -113,7 +112,7 @@ class Board(object):
         :return: (x, y) if white; (x, -y) if black
         """
         if unit.get_side() == black:
-            return (loc[0], -loc[1])
+            return loc[0], -loc[1]
         else:
             return loc
 
@@ -149,12 +148,10 @@ class Board(object):
                         attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
             defender.deal_damage(attacker.effective_strength())
             if defender.isDead():
-                self.remove_unit(defender)
                 attacker.gain_xp(defender.get_xp_drop())
             return True
         else:
             return False
-
 
     def valid(self, x, y):
         """
@@ -202,13 +199,9 @@ class Board(object):
         :return: None
         """
         for x in self.units.keys():
-            if x.isDead():
-                x.side.add_morale(-1 * x.get_value())
-                x.side.other.add_morale(0.5 * x.get_value())
-                x.side.remove_unit(x)
-                self.remove_unit(x)
-            else:
-                x.tick()
+            x.tick()
+        white.tick()
+        black.tick()
 
     def get_pieces(self):
         """
@@ -237,7 +230,9 @@ class Board(object):
         morale = 0.5 + (health - 0.5)/2 + num_local
         if not unit.get_side().king_alive():
             morale -= 0.25
-        if morale > 1:
+        if unit.get_side().get_rallied():
+            morale += 0.25
+        if morale > 1 or unit.get_side().get_influenced():
             morale = 1
         if morale < 0:
             morale = 0
@@ -250,6 +245,34 @@ class Side(object):
         self.other = None
         self.name = name
         self.has_king = False
+        self.rallied = 0
+        self.influenced = False
+
+    def rally(self):
+        """
+        Rallies this side.
+        :return: None
+        """
+        self.rallied = 5
+
+    def get_rallied(self):
+        """
+        :return: whether or not this side is rallied.
+        """
+        return self.rallied > 0
+
+    def influence(self):
+        """
+        Influences this side.
+        :return: None
+        """
+        self.influenced = True
+
+    def get_influenced(self):
+        """
+        :return: whether or not this side is influenced.
+        """
+        return self.influenced
 
     def king_alive(self):
         """
@@ -299,9 +322,18 @@ class Side(object):
         :param unit: the unit to be removed
         :return: None
         """
-        self.units.pop(unit)
+        self.units.remove(unit)
         if type(unit) == King:
             self.has_king = False
+
+    def tick(self):
+        """
+        Decreases the remaining time left on the rally method.
+        :return: None
+        """
+        if self.rallied > 0:
+            self.rallied -= 1
+        self.influenced = False
 
     def __str__(self):
         """
