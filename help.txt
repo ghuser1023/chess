@@ -1,0 +1,90 @@
+This is the help file for the enclosed game:
+
+<<<CHESS II>>>
+
+
+****************
+RUNNING THE GAME
+
+1. If you do not have Python 3 installed, install Python 3.
+
+2. Run (double click) main.py.
+
+
+****************
+PLAYING THE GAME
+
+This game works mostly the same way chess does. The following aspects have been altered:
+
+CAPTURING: Pieces are no longer captured instantaneously; it is patently ridiculous that a knight would be defeated
+immediately by a single pawn. Rather, pieces have health and attack statistics, and deal damage to other units when
+they attack; units are removed from the board when their health drops to or below zero.
+
+ATTACKING: Pieces inflict damage in a certain radius depending on whether or not they are melee (3x3 box) or ranged
+(5x5 box). Pawns, Knights, Forts, and Kings are melee units, while Bishops and Queens are ranged units (because they
+have staffs rather than swords). Pieces do not move into the space they attack, even if the attack destroys the
+opposing unit.
+
+SPECIAL RULES: En passant, castling, and pawn promotion are no longer rules. Pawns are stuck when they reach the final
+rank of the board, though they may still attack if enemy units move into range.
+
+MORALE: Units now have a morale statistic, which determines their ability to be ordered around. Units with high morale
+will certainly obey orders, while units with low morale may reject orders outright.
+
+TURNS: Your turn no longer ends after a single action. You may move as many pieces or cast as many abilities as you
+want in your turn, subject only to the rule that a single piece may only take a single action in a turn. If a unit
+disobeys, it is considered to have used its turn. Your turn ends when you press the end turn button.
+
+VICTORY CONDITIONS: You no longer win when you capture the enemy king. The loss of the king leads to a large reduction
+in morale; however, the battle is certainly not over. The battle ends only when the opposing army is completely
+destroyed or the opposing commander surrenders.
+
+PIECE EXPERIENCE: Pieces can gain experience as they defeat enemy units. When they gain enough experience, they level
+up, gaining stat increases and better appearance. Level 3 is the maximum attainable level.
+
+PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their "abilities". These abilities vary from
+piece to piece, and have cooldown lengths until they can be used again. Additionally, there are some abilities that
+are not casted manually; rather, they are "passive" and effective as long as the piece is alive. Abilities are also
+affected by morale, failing more often if morale is low; however, using an ability does not use up a piece's turn.
+
+    PAWN ABILITIES
+        Arrowstorm: ranged attack for the pawn. Casted at a target within range 2.
+        Proletariat Solidarity: (passive ability) pawns gain attack and defense boosts whenever other friendly pawns
+            are in range.
+
+    FORT (ROOK) ABILITIES
+        Aerial Defense: ranged attack for the fort. Casted at a target within range 2.
+        Fortify: (passive ability) adjacent pieces gain defense boosts.
+
+    KNIGHT ABILITIES
+        Charge: moves the knight normally, buffing its attack.
+        Chivalry: chooses a unit within range 2 to protect and buffs defense, redirecting any attacks on that unit to
+            this knight.
+
+    BISHOP ABILITIES
+        Regeneration: heals target unit to full health.
+        Piety: at range 2, all units gain temporary stat boosts.
+
+    QUEEN ABILITIES
+        Influence: sets all units' morale to 100 for 1 turn, effectively making every single action succeed the turn
+            this move is used.
+        Subterfuge: at large range, calls in spies to damage and debuff target unit.
+
+    KING ABILITIES:
+        Call to Arms: spawns two mercenary pawns anywhere on the map.
+        Rally: buffs morale significantly for a certain amount of turns.
+
+
+**********************
+OTHER GAME INFORMATION
+
+You can press the save button to save your game, and the surrender button to surrender. Pressing the load button loads
+a saved game.
+
+
+*******
+CREDITS
+
+The Pyglet graphics package
+Maxime Berenshteyn
+Andy Peng
