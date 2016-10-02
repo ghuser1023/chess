@@ -4,7 +4,7 @@ from pyglet.window import mouse
 from graphics import *
 
 window = pyglet.window.Window(w_length, w_height)
-
+window.set_caption("Chess 2")
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
@@ -72,7 +72,7 @@ class Draw:
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
             ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
-            ("c3B", (255, 255, 255)*4))
+            ("c3B", (255, 220, 185)*4))
 
     @staticmethod
     def draw_black_rect(x, y):
@@ -85,7 +85,7 @@ class Draw:
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
             ("v2i", (sq_size*x, sq_size*y + top_bar, sq_size*(x+1), sq_size*y + top_bar,
                  sq_size*(x+1), sq_size*(y+1) + top_bar, sq_size*x, sq_size*(y+1) + top_bar)),
-            ("c3B", (0, 0, 0)*4))
+            ("c3B", (90, 60, 30)*4))
 
     @staticmethod
     def draw_board():
@@ -93,6 +93,11 @@ class Draw:
         Draws the board itself.
         :return: None
         """
+        th = 1
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                             ("v2i", (sq_size - th, sq_size + top_bar - th, sq_size - th, top_bar + sq_size * 9 + th,
+                                      sq_size*9+th, sq_size*9+top_bar+th, sq_size*9+th, sq_size+top_bar-th)),
+                             ("c3B", (0, 0, 0) * 4))
         for x in range(1, 9, 2):
             for y in range(1, 9, 2):
                 Draw.draw_black_rect(x, y)
@@ -262,7 +267,6 @@ class Draw:
         label = pyglet.text.Label(mult, font_name='Courier New', font_size=11, bold=True,
                                   x=offset + buff_size*3 // 2, y=buff_height + buff_size // 2, anchor_x='left',
                                   anchor_y='center')
-
         label.draw()
 
     @staticmethod
@@ -271,11 +275,12 @@ class Draw:
         Draws a "no unit selected" empty HUD.
         :return: None
         """
-        width1 = sq_size
-        width2 = w_length - sq_size
-        height1 = buff_height + 10
-        height2 = name_height + 20
-        th = 4
+        off = 3
+        width1 = sq_size + off
+        width2 = sq_size * 9 - off
+        height1 = buff_height + 10 + off
+        height2 = name_height + 20 - off
+        th = 3
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
                  ("v2i", (width1, height1, width1, height2, width2, height2, width2, height1)),
                  ("c3B", (255, 255, 255) * 4))
@@ -288,6 +293,157 @@ class Draw:
                                   anchor_y='center')
         label.draw()
 
+    @staticmethod
+    def draw_side_bar():
+        """
+        Draws the bar that separates the board from the side display.
+        :return: None
+        """
+        width1 = 10 * sq_size
+        height1 = w_height  # w_height - sq_size//2
+        height2 = 0  # sq_size//2
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                             ("v2i", (width1, height1, width1, height2,
+                                      width1 + 2, height2, width1 + 2, height1)),
+                             ("c3B", (0, 0, 0) * 4))
+
+    @staticmethod
+    def draw_side_div(height):
+        """
+        Draws a side division bar.
+        :param height: the height at which the bar will be drawn.
+        :return: None
+        """
+        width1 = 10 * sq_size
+        height = w_height - height
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                             ("v2i", (width1, height, width1, height + 2,
+                                      w_length, height + 2, w_length, height)),
+                             ("c3B", (0, 0, 0) * 4))
+
+    @staticmethod
+    def draw_button(height, text, color, w=button_width, h=button_height, secondary=(0, 0, 0)):
+        """
+        Draws a button on the side.
+        :param height: the height at which the button will be drawn (this is the lower height)
+        :param text: the label for the button
+        :param color: the color of the button
+        :param w: the horizontal width (length) of the button
+        :param h: the vertical width (height) of the button
+        :param secondary: the border color of the button
+        :return: None
+        """
+        width = label_calib - (w // 2)
+        th = 2
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                             ("v2i", (width, height, width, height + h, width + w, height + h, width + w, height)),
+                             ("c3B", secondary * 4))
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                         ("v2i", (width + th, height + th, width + th, height + h - th,
+                                  width - th + w, height + h - th, width - th + w, height + th)),
+                         ("c3B", color * 4))
+        label = pyglet.text.Label(text, font_name='Courier New', font_size=11, bold=True,
+                                  x=width + w // 2, y=height + h // 2,
+                                  anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+        label.draw()
+
+    @staticmethod
+    def draw_name():
+        """
+        Draws the name of the game.
+        :return: None
+        """
+        dist_from_top = 35
+        label1 = pyglet.text.Label("Chess", font_name='Courier New', font_size=16, bold=True,
+                                  x=label_calib, y=w_height - dist_from_top,
+                                  anchor_x='center', anchor_y='center', color=side_label_color)
+        label2 = pyglet.text.Label("II", font_name='Courier New', font_size=16, bold=True,
+                                  x=label_calib, y=w_height - dist_from_top - 20,
+                                  anchor_x='center', anchor_y='center', color=side_label_color)
+        label1.draw()
+        label2.draw()
+
+    @staticmethod
+    def draw_move_owner():
+        """
+        Draws whose turn it is.
+        :return: None
+        """
+        dist_from_top = 115
+        if Utils.get_cur_side() == white:
+            color = (255, 255, 255)
+            name = "White"
+        else:
+            color = (0, 0, 0)
+            name = "Black"
+        Draw.draw_button(w_height - dist_from_top, "", color, p_size, p_size, (127, 127, 255))
+        label1 = pyglet.text.Label(name, font_name='Courier New', font_size=11, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 10,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label2 = pyglet.text.Label("to move", font_name='Courier New', font_size=11, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 20,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label1.draw()
+        label2.draw()
+
+    @staticmethod
+    def draw_turn_number():
+        """
+        Draws what turn it is.
+        :return:
+        """
+        dist_from_top = 170
+        label1 = pyglet.text.Label("Turn", font_name='Courier New', font_size=11, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label2 = pyglet.text.Label(str(board.get_num_turns()), font_name='Courier New', font_size=18, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 22,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label1.draw()
+        label2.draw()
+
+    @staticmethod
+    def draw_board_flipping():
+        dist_from_top = 285
+        if board_flipped:
+            color = (127, 255, 127)
+        else:
+            color = (255, 127, 127)
+        Draw.draw_button(w_height - dist_from_top, "", color, p_size, p_size)
+        label1 = pyglet.text.Label("Toggle", font_name='Courier New', font_size=10, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 10,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label2 = pyglet.text.Label("board", font_name='Courier New', font_size=10, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 22,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label3 = pyglet.text.Label("flipping", font_name='Courier New', font_size=10, bold=True,
+                                   x=label_calib, y=w_height - dist_from_top - 34,
+                                   anchor_x='center', anchor_y='center', color=side_label_color)
+        label1.draw()
+        label2.draw()
+        label3.draw()
+
+    @staticmethod
+    def draw_side_display():
+        """
+        Draws the sidebar displays (that appear to the right of the board).
+        :return: None
+        """
+        Draw.draw_side_bar()
+        Draw.draw_name()
+        Draw.draw_side_div(80)
+        Draw.draw_move_owner()
+        Draw.draw_side_div(155)
+        Draw.draw_turn_number()
+        Draw.draw_side_div(215)
+        Draw.draw_button(w_height - 250, "End Turn", (255, 255, 191))
+        Draw.draw_board_flipping()
+        Draw.draw_side_div(340)
+        Draw.draw_button(w_height - 375, "Save", (255, 255, 191))
+        Draw.draw_button(w_height - 405, "Load", (255, 255, 191))
+        Draw.draw_side_div(415)
+        Draw.draw_button(w_height - 450, "New Game", (255, 255, 191))
+
 
 @window.event
 def on_draw():
@@ -296,9 +452,14 @@ def on_draw():
     :return: None
     """
     window.clear()
-    pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0,0,0,w_height,w_length,w_height,w_length,0)), ("c3B", (127, 127, 127)*4))
+    pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0,0,0,w_height,w_length,w_height,w_length,0)),
+                         ("c3B", (127, 127, 127) * 4))
+    pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
+                         ("v2i", (10*sq_size + 2, 0, 10*sq_size + 2, w_height, w_length, w_height, w_length, 0)),
+                         ("c3B", (240, 240, 240) * 4))
     Draw.draw_board()
     Draw.draw_pieces()
     Draw.draw_ability_images()
     Draw.draw_message()
+    Draw.draw_side_display()
 

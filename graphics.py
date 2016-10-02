@@ -8,7 +8,7 @@ p_size = 28  # the size of each piece thumbnail
 pieceimages = {}
 abilityimages = {}
 
-w_length = 400  # the length of the window
+w_length = 520  # the length of the window
 w_height = 480  # the height of the window
 top_bar = 80  # the distance from the bottom of the window to the board
 hud_cal = 65  # used to calibrate the HUD
@@ -32,10 +32,16 @@ buff_height = top_bar - hud_cal - 0  # the height of the buff indicators
 buff_size = 18  # the size of the buff indicator square
 buff_dist = 90  # the distance between the buff indicators
 
+button_width = 85  # the default width of each button
+button_height = 25  # the default height of each button
+label_calib = sq_size * 23 // 2
+side_label_color = (0, 0, 0, 255)  # the default color of the side labels
+
 cur_abils = []  # the abilities that are currently displayed
 cur_side = white  # the current side that has the move
 states = ["working", "select_unit", "unit_selected", "select_squares"]  # all possible states
 state = ["select_unit", None, 0, [], -1]  # the current state
+board_flipped = False  # whether or not the board should be flipped
 
 
 class Utils:
@@ -68,6 +74,14 @@ class Utils:
         x -= abil_width_dist
         if x >= 0 and y >= 0 and x < p_size and y < p_size and state[1].num_abils() > 1:
             return 1
+
+    @staticmethod
+    def get_cur_side():
+        """
+        :return: the current side. (weird problems with immutable global variables)
+        """
+        global cur_side
+        return cur_side
 
 class Selections:
     error = ""

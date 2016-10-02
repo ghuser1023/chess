@@ -356,3 +356,4 @@ class Queen(Unit):
         else:
             return "Ability not sufficiently cooled down."
 
+Unit.add_fort(Fort)

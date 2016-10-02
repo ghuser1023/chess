@@ -2,6 +2,8 @@
 
 
 class Unit(object):
+    fort = None
+
     def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils, mabils):
         """
         :param strength: the default attack stat of this unit.
@@ -138,7 +140,13 @@ class Unit(object):
         """
         :return: the buff given to this unit's defense.
         """
-        buff = 1
+        num_local = 0
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                checked_unit = self.board.get_unit(self.board.get_loc(self)[0] + i, self.board.get_loc(self)[1] + j)
+                if checked_unit is not None and checked_unit.side == self.side and type(checked_unit) == Unit.fort:
+                    num_local += 1
+        buff = num_local * 0.3 + 1
         for x in self.buffs[1]:
             buff *= x[0]
         return buff
@@ -309,4 +317,8 @@ class Unit(object):
         if self.name == "Fort":
             return "r" + str(self.level)
         return self.name[0].lower() + str(self.level)
+
+    @staticmethod
+    def add_fort(fort_class):
+        Unit.fort = fort_class
 

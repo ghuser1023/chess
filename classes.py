@@ -2,6 +2,7 @@
 
 from subpieces import *
 
+num_turns = 1
 
 def initialize_board():
     """
@@ -198,10 +199,12 @@ class Board(object):
         Ends a turn; updates morale, removes dead units, and updates units.
         :return: None
         """
+        global num_turns
         for x in self.units.keys():
             x.tick()
         white.tick()
         black.tick()
+        num_turns += 1
 
     def get_pieces(self):
         """
@@ -237,6 +240,13 @@ class Board(object):
         if morale < 0:
             morale = 0
         return morale
+
+    def get_num_turns(self):
+        """
+        :return: the number of turns that have elapsed
+        """
+        global num_turns
+        return num_turns
 
 
 class Side(object):
