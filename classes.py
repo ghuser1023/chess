@@ -2,47 +2,10 @@
 
 from subpieces import *
 
-num_turns = 1
-
-def initialize_board():
-    """
-    Initializes board conditions.
-    :return: None
-    """
-    white.other = black
-    black.other = white
-    board.set_sides(white, black)
-    for x in range(8):
-        wp = Pawn()
-        bp = Pawn()
-        wp.set_board(board)
-        wp.set_side(white)
-        bp.set_board(board)
-        bp.set_side(black)
-        board.add_unit(wp, x, 1)
-        board.add_unit(bp, x, 6)
-        white.add_unit(wp)
-        black.add_unit(bp)
-    row_0 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
-    row_7 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
-    column = 0
-    for piece in row_0:
-        piece.set_board(board)
-        piece.set_side(white)
-        board.add_unit(piece, column, 0)
-        white.add_unit(piece)
-        column += 1
-    column = 0
-    for piece in row_7:
-        piece.set_board(board)
-        piece.set_side(black)
-        board.add_unit(piece, column, 7)
-        black.add_unit(piece)
-        column += 1
-
 
 class Board(object):
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.board = []
         self.units = {}
         self.side1 = None
@@ -112,7 +75,7 @@ class Board(object):
         :param loc: the delta-(x, y) of the move/attack
         :return: (x, y) if white; (x, -y) if black
         """
-        if unit.get_side() == black:
+        if unit.get_side() == game.get_black():
             return loc[0], -loc[1]
         else:
             return loc
@@ -126,7 +89,8 @@ class Board(object):
         :return: whether or not the move was successful
         """
         loc = self.units[unit]
-        if (unit.get_side() == white and unit.check_move(x,y)) or (unit.get_side() == black and unit.check_move(x,-y)):
+        if (unit.get_side() == game.get_white() and unit.check_move(x,y)) \
+                or (unit.get_side() == game.get_black() and unit.check_move(x,-y)):
             if self.valid(loc[0] + x, loc[1] + y) and self.valid_path(unit, loc[0] + x, loc[1] + y):
                 self.board[loc[0] + x][loc[1] + y] = unit
                 self.board[loc[0]][loc[1]] = None
@@ -145,8 +109,8 @@ class Board(object):
         """
         (a, b) = self.units[attacker]
         defender = self.board[x][y]
-        if (attacker.get_side() == white and attacker.check_attack(x - a, y - b)) or (
-                        attacker.get_side() == black and attacker.check_attack(x - a, b - y)):
+        if (attacker.get_side() == game.get_white() and attacker.check_attack(x - a, y - b)) or (
+                        attacker.get_side() == game.get_black() and attacker.check_attack(x - a, b - y)):
             defender.deal_damage(attacker.effective_strength())
             if defender.isDead():
                 attacker.gain_xp(defender.get_xp_drop())
@@ -202,9 +166,9 @@ class Board(object):
         global num_turns
         for x in self.units.keys():
             x.tick()
-        white.tick()
-        black.tick()
-        num_turns += 1
+        game.get_white().tick()
+        game.get_black().tick()
+        game.next_turn()
 
     def get_pieces(self):
         """
@@ -240,13 +204,6 @@ class Board(object):
         if morale < 0:
             morale = 0
         return morale
-
-    def get_num_turns(self):
-        """
-        :return: the number of turns that have elapsed
-        """
-        global num_turns
-        return num_turns
 
 
 class Side(object):
@@ -353,7 +310,90 @@ class Side(object):
         return self.name.lower()
 
 
-board = Board()
-white = Side("White")
-black = Side("Black")
-initialize_board()
+class Game(object):
+    def __init__(self):
+        self.board = Board(self)
+        self.white = Side("White")
+        self.black = Side("Black")
+        self.num_turns = 1
+        self.cur_side = self.white
+        self.initialize_board()
+
+    def get_cur_side(self):
+        return self.cur_side
+
+    def get_num_turns(self):
+        return self.num_turns
+
+    def switch_side(self):
+        self.cur_side = self.cur_side.get_opponent()
+
+    def next_turn(self):
+        """
+        Increments the number of turns.
+        :return: None
+        """
+        self.num_turns += 1
+
+    def get_board(self):
+        """
+        :return: the board object
+        """
+        return self.board
+
+    def get_white(self):
+        """
+        :return: the white side
+        """
+        return self.white
+
+    def get_black(self):
+        """
+        :return: the black side
+        """
+        return self.black
+
+    def initialize_board(self):
+        """
+        Initializes self.board conditions.
+        :return: None
+        """
+        self.white.other = self.black
+        self.black.other = self.white
+        self.board.set_sides(self.white, self.black)
+        for x in range(8):
+            wp = Pawn()
+            bp = Pawn()
+            wp.set_board(self.board)
+            wp.set_side(self.white)
+            bp.set_board(self.board)
+            bp.set_side(self.black)
+            self.board.add_unit(wp, x, 1)
+            self.board.add_unit(bp, x, 6)
+            self.white.add_unit(wp)
+            self.black.add_unit(bp)
+        row_0 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
+        row_7 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
+        column = 0
+        for piece in row_0:
+            piece.set_board(self.board)
+            piece.set_side(self.white)
+            self.board.add_unit(piece, column, 0)
+            self.white.add_unit(piece)
+            column += 1
+        column = 0
+        for piece in row_7:
+            piece.set_board(self.board)
+            piece.set_side(self.black)
+            self.board.add_unit(piece, column, 7)
+            self.black.add_unit(piece)
+            column += 1
+
+    def new_game(self):
+        """
+        Creates a new game.
+        :return: None
+        """
+        self.__init__()
+
+game = Game()

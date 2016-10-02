@@ -20,44 +20,45 @@ def on_mouse_press(x, y, button, modifiers):
         print(state)
         if state[0] == "working":
             pass
-        elif state[0] == "select_unit":
-            Selections.select_unit(x, y)
-        elif state[0] == "unit_selected":
-            loc = Utils.loc_to_square(x, y)
-            if loc is not None:
-                unit = board.get_unit(loc[0], loc[1])
-                if unit is None:
-                    Selections.select_move(loc)
-                elif unit == state[1]:
-                    state[0] = "select_unit"
-                    state[1] = None
-                    cur_abils.clear()
-                elif unit.get_side() == state[1].get_side():
-                    Selections.select_unit(x, y)
-                else:
-                    Selections.select_attack(loc)
-            else:
-                abil = Utils.loc_to_ability(x, y)
-                if abil is not None:
-                    if state[1].get_num_input(abil) == 0:
-                        Selections.select_ability()
-                    else:
-                        state[0] = "select_squares"
-                        state[2] = state[1].get_num_input(abil)
-                        state[4] = abil
-        elif state[0] == "select_squares":
-            abil = Utils.loc_to_ability(x, y)
-            if abil is not None:
-                state[0] = "unit_selected"
-                state[2] = 0
-                state[4] = -1
-                state[3].clear()
-            else:
+        elif not Selections.select_button(x, y):
+            if state[0] == "select_unit":
+                Selections.select_unit(x, y)
+            elif state[0] == "unit_selected":
                 loc = Utils.loc_to_square(x, y)
                 if loc is not None:
-                    state[3].append(loc)
-                if len(state[3]) == state[2]:
-                    Selections.select_ability()
+                    unit = game.get_board().get_unit(loc[0], loc[1])
+                    if unit is None:
+                        Selections.select_move(loc)
+                    elif unit == state[1]:
+                        state[0] = "select_unit"
+                        state[1] = None
+                        cur_abils.clear()
+                    elif unit.get_side() == state[1].get_side():
+                        Selections.select_unit(x, y)
+                    else:
+                        Selections.select_attack(loc)
+                else:
+                    abil = Utils.loc_to_ability(x, y)
+                    if abil is not None:
+                        if state[1].get_num_input(abil) == 0:
+                            Selections.select_ability()
+                        else:
+                            state[0] = "select_squares"
+                            state[2] = state[1].get_num_input(abil)
+                            state[4] = abil
+            elif state[0] == "select_squares":
+                abil = Utils.loc_to_ability(x, y)
+                if abil is not None:
+                    state[0] = "unit_selected"
+                    state[2] = 0
+                    state[4] = -1
+                    state[3].clear()
+                else:
+                    loc = Utils.loc_to_square(x, y)
+                    if loc is not None:
+                        state[3].append(loc)
+                    if len(state[3]) == state[2]:
+                        Selections.select_ability()
 
 
 class Draw:
@@ -115,12 +116,12 @@ class Draw:
         Draws all the pieces and calls the relevant HUD method.
         :return: None
         """
-        for piece in board.get_pieces():
+        for piece in game.get_board().get_pieces():
             side = str(piece.side)[0]
             typ = str(piece)[:1]
             lvl = piece.get_level()
-            locx = board.get_loc(piece)[0]*sq_size + piece_calib
-            locy = board.get_loc(piece)[1]*sq_size + top_bar + piece_calib
+            locx = game.get_board().get_loc(piece)[0]*sq_size + piece_calib
+            locy = game.get_board().get_loc(piece)[1]*sq_size + top_bar + piece_calib
             # Drawing the "piece activated by chivalry" indicator (yellow)
             if piece.get_protected():
                 pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
@@ -155,8 +156,8 @@ class Draw:
                                   anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
         label.draw()
         # Drawing the morale bar
-        Draw.draw_bar(board.get_morale(piece), (125, 125, 255), mbar_height)
-        text = str(int(board.get_morale(piece) * 100)) + "/100"
+        Draw.draw_bar(game.get_board().get_morale(piece), (125, 125, 255), mbar_height)
+        text = str(int(game.get_board().get_morale(piece) * 100)) + "/100"
         label = pyglet.text.Label(text, font_name='Courier New', font_size=10, bold=False,
                                   x=sq_size + bar_len // 2, y=top_bar + mbar_height + bar_width // 2 - hud_cal,
                                   anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
@@ -370,7 +371,7 @@ class Draw:
         :return: None
         """
         dist_from_top = 115
-        if Utils.get_cur_side() == white:
+        if game.get_cur_side() == game.get_white():
             color = (255, 255, 255)
             name = "White"
         else:
@@ -396,15 +397,15 @@ class Draw:
         label1 = pyglet.text.Label("Turn", font_name='Courier New', font_size=11, bold=True,
                                    x=label_calib, y=w_height - dist_from_top,
                                    anchor_x='center', anchor_y='center', color=side_label_color)
-        label2 = pyglet.text.Label(str(board.get_num_turns()), font_name='Courier New', font_size=18, bold=True,
-                                   x=label_calib, y=w_height - dist_from_top - 22,
+        label2 = pyglet.text.Label(str(game.get_num_turns()), font_name='Courier New', font_size=18,
+                                   bold=True, x=label_calib, y=w_height - dist_from_top - 22,
                                    anchor_x='center', anchor_y='center', color=side_label_color)
         label1.draw()
         label2.draw()
 
     @staticmethod
     def draw_board_flipping():
-        dist_from_top = 285
+        dist_from_top = flip_height
         if board_flipped:
             color = (127, 255, 127)
         else:
@@ -436,13 +437,13 @@ class Draw:
         Draw.draw_side_div(155)
         Draw.draw_turn_number()
         Draw.draw_side_div(215)
-        Draw.draw_button(w_height - 250, "End Turn", (255, 255, 191))
+        Draw.draw_button(w_height - b_heights[0], "End Turn", (255, 255, 191))
         Draw.draw_board_flipping()
         Draw.draw_side_div(340)
-        Draw.draw_button(w_height - 375, "Save", (255, 255, 191))
-        Draw.draw_button(w_height - 405, "Load", (255, 255, 191))
+        Draw.draw_button(w_height - b_heights[1], "Save", (255, 255, 191))
+        Draw.draw_button(w_height - b_heights[2], "Load", (255, 255, 191))
         Draw.draw_side_div(415)
-        Draw.draw_button(w_height - 450, "New Game", (255, 255, 191))
+        Draw.draw_button(w_height - b_heights[3], "New Game", (255, 255, 191))
 
 
 @window.event

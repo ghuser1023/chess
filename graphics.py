@@ -32,13 +32,15 @@ buff_height = top_bar - hud_cal - 0  # the height of the buff indicators
 buff_size = 18  # the size of the buff indicator square
 buff_dist = 90  # the distance between the buff indicators
 
-button_width = 85  # the default width of each button
-button_height = 25  # the default height of each button
 label_calib = sq_size * 23 // 2
 side_label_color = (0, 0, 0, 255)  # the default color of the side labels
 
+button_width = 85  # the default width of each button
+button_height = 25  # the default height of each button
+flip_height = 285  # the height of the board flipping button
+b_heights = (250, 375, 405, 450)  # the "big" button heights
+
 cur_abils = []  # the abilities that are currently displayed
-cur_side = white  # the current side that has the move
 states = ["working", "select_unit", "unit_selected", "select_squares"]  # all possible states
 state = ["select_unit", None, 0, [], -1]  # the current state
 board_flipped = False  # whether or not the board should be flipped
@@ -76,12 +78,37 @@ class Utils:
             return 1
 
     @staticmethod
-    def get_cur_side():
+    def loc_to_button(x, y):
         """
-        :return: the current side. (weird problems with immutable global variables)
+        Converts window pixels to buttons.
+        :param x: the x-location (in terms of window pixels)
+        :param y: the y-location (in terms of window pixels)
+        :return: the method that should be called
         """
-        global cur_side
-        return cur_side
+        y = w_height - y
+        if (label_calib - button_width // 2) < x < (label_calib + button_width // 2):
+            if b_heights[0] > y > (b_heights[0] - button_height):
+                game.switch_side()
+                return game.get_board().end_turn
+            elif flip_height > y > (flip_height - button_height):
+                return Utils.flip_board
+            elif b_heights[1] > y > (b_heights[1] - button_height):
+                return FileHandling.save
+            elif b_heights[2] > y > (b_heights[2] - button_height):
+                return FileHandling.load
+            elif b_heights[3] > y > (b_heights[3] - button_height):
+                return game.new_game
+        print("failed")
+        return None
+
+    @staticmethod
+    def flip_board():
+        """
+        Changes the board_flipped statistic.
+        :return: None
+        """
+        global board_flipped
+        board_flipped = not board_flipped
 
 class Selections:
     error = ""
@@ -95,9 +122,9 @@ class Selections:
         :return: None
         """
         loc = Utils.loc_to_square(x, y)
-        if loc != None:
-            unit = board.get_unit(loc[0], loc[1])
-            if unit != None:
+        if loc is not None:
+            unit = game.get_board().get_unit(loc[0], loc[1])
+            if unit is not None:
                 state[0] = "unit_selected"
                 state[1] = unit
                 cur_abils.clear()
@@ -114,12 +141,11 @@ class Selections:
         :param error: the method name string (used for the error message to be displayed upon failure)
         :return: None
         """
-        global cur_side
-        if state[1].get_side() == cur_side:
+        if state[1].get_side() == game.get_cur_side():
             worked = method(state[1], x, y)
             if worked:
-                cur_side = cur_side.get_opponent()
-                board.end_turn()
+                game.switch_side()
+                game.get_board().end_turn()
                 state[0] = "select_unit"
                 state[1] = None
                 cur_abils.clear()
@@ -127,7 +153,7 @@ class Selections:
             else:
                 Selections.error = "That " + error + " is invalid."
         else:
-            Selections.error = "It is " + cur_side.get_name() + " to move."
+            Selections.error = "It is " + game.get_cur_side().get_name() + " to move."
 
     @staticmethod
     def select_move(loc):
@@ -136,9 +162,9 @@ class Selections:
         :param loc: the board location of the move destination
         :return: None
         """
-        (a, b) = board.get_loc(state[1])
+        (a, b) = game.get_board().get_loc(state[1])
         (x, y) = loc
-        Selections.select_general(board.move_unit, x - a, y - b, "move")
+        Selections.select_general(game.get_board().move_unit, x - a, y - b, "move")
 
     @staticmethod
     def select_attack(loc):
@@ -147,10 +173,10 @@ class Selections:
         :param loc: the board location of the attack target
         :return: None
         """
-        if board.get_unit(loc[0], loc[1]).get_side() == state[1].get_side():
+        if game.get_board().get_unit(loc[0], loc[1]).get_side() == state[1].get_side():
             Selections.error = "No friendly fire."
         else:
-            Selections.select_general(board.attack_unit, loc[0], loc[1], "attack")
+            Selections.select_general(game.get_board().attack_unit, loc[0], loc[1], "attack")
 
     @staticmethod
     def select_ability():
@@ -161,8 +187,7 @@ class Selections:
         abil = state[4]
         ability = state[1].abil_methods()[abil]
         squares = state[3]
-        global cur_side
-        if state[1].get_side() == cur_side:
+        if state[1].get_side() == game.get_cur_side():
             error = ability(squares)
             if error == "":
                 state[0] = "unit_selected"
@@ -174,10 +199,40 @@ class Selections:
                 state[2] = state[1].get_num_input(state[4])
                 state[3].clear()
         else:
-            Selections.error = "It is " + cur_side.get_name() + " to move."
+            Selections.error = "It is " + game.get_cur_side().get_name() + " to move."
+
+    @staticmethod
+    def select_button(x, y):
+        """
+        Attempts to select a certain menu button.
+        :param x: the x-coordinate (window)
+        :param y: the y-coordinate (window)
+        :return: whether or not the attempt was successful
+        """
+        button = Utils.loc_to_button(x, y)
+        if button is None:
+            return False
+        else:
+            button()
 
 
 class FileHandling():
+    @staticmethod
+    def save():
+        """
+        Saves the game.
+        :return: None
+        """
+        pass
+
+    @staticmethod
+    def load():
+        """
+        Loads the game.
+        :return: None
+        """
+        pass
+
     @staticmethod
     def import_abilities():
         """
