@@ -4,6 +4,9 @@ from subpieces import *
 
 
 class Board(object):
+    """
+    Represents the game board.
+    """
     def __init__(self, game):
         self.game = game
         self.board = []
@@ -174,7 +177,7 @@ class Board(object):
         """
         :return: a list of the pieces on the board.
         """
-        return list(self.units.keys())
+        return self.units.keys()
 
     def get_morale(self, unit):
         """
@@ -207,6 +210,9 @@ class Board(object):
 
 
 class Side(object):
+    """
+    Represents an individual side/army (typically white and black).
+    """
     def __init__(self, name):
         self.units = []
         self.other = None
@@ -311,6 +317,9 @@ class Side(object):
 
 
 class Game(object):
+    """
+    Represents the game itself.
+    """
     def __init__(self):
         self.board = Board(self)
         self.white = Side("White")
@@ -319,13 +328,37 @@ class Game(object):
         self.cur_side = self.white
         self.initialize_board()
 
+    def reset(self, num_turns, cur_side):
+        """
+        Resets the game board in anticipation of a load.
+        :return:
+        """
+        self.board = Board(self)
+        self.white = Side("White")
+        self.black = Side("Black")
+        if cur_side == 'White':
+            self.cur_side = self.white
+        elif cur_side == 'Black':
+            self.cur_side = self.black
+        self.num_turns = num_turns
+
     def get_cur_side(self):
+        """
+        :return: the current owner of the move.
+        """
         return self.cur_side
 
     def get_num_turns(self):
+        """
+        :return: the amount of turns elapsed.
+        """
         return self.num_turns
 
     def switch_side(self):
+        """
+        Switches the current side moving (called at end of turn).
+        :return: None
+        """
         self.cur_side = self.cur_side.get_opponent()
 
     def next_turn(self):

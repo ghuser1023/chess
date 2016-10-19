@@ -46,7 +46,10 @@ state = ["select_unit", None, 0, [], -1]  # the current state
 board_flipped = False  # whether or not the board should be flipped
 
 
-class Utils:
+class Utils(object):
+    """
+    Contains methods that convert screen coordinates (in pixels) to board coordinates/buttons.
+    """
     @staticmethod
     def loc_to_square(x, y):
         """
@@ -110,7 +113,11 @@ class Utils:
         global board_flipped
         board_flipped = not board_flipped
 
-class Selections:
+
+class Selections(object):
+    """
+    Contains methods that process and act upon mouse actions.
+    """
     error = ""
 
     @staticmethod
@@ -217,21 +224,85 @@ class Selections:
 
 
 class FileHandling():
+    """
+    Contains methods that use external files (image loading and load/save systems).
+    """
     @staticmethod
     def save():
         """
         Saves the game.
         :return: None
         """
-        pass
+        try:
+            f = open("save.txt", 'w')
+            f.write(str(game.get_num_turns()) + "\n")
+            f.write(str(game.get_cur_side().get_name() + "\n"))
+            pieces = game.get_board().get_pieces()
+            for piece in pieces:
+                f.write(piece.get_save_data())
+            f.write("End of file.\n")
+        except IOError:
+            pass
 
     @staticmethod
     def load():
         """
         Loads the game.
-        :return: None
+        :return: whether or not a save file was found.
         """
-        pass
+        try:
+            f = open("save.txt", 'r')
+            num_turns = f.readline()[:-1]
+            cur_side = f.readline()[:-1]
+            game.reset(num_turns, cur_side)
+            typ = f.readline()[:-1]
+
+            while typ != "End of file.":
+                piece = unit_dict[typ]()
+                side = f.readline()[:-1]
+                if side == 'White':
+                    side = game.get_white()
+                elif side == 'Black':
+                    side = game.get_black()
+                loc = f.readline()[:-1]
+                loc = (loc[0:1], loc[2:3])
+                game.get_board().add_unit(piece, loc[0], loc[1])
+                side.add_unit(piece)
+                piece.set_board(game.get_board())
+                piece.set_side(side)
+
+                buff0 = f.readline()[:-1]
+                while buff0 != "":
+                    buff0 = buff0.split()
+                    piece.buff_attack(int(buff0[0]), int(buff0[1]))
+                    buff0 = f.readline()[:-1]
+                buff1 = f.readline()[:-1]
+                while buff1 != "":
+                    buff1 = buff1.split()
+                    piece.buff_health(int(buff1[0]), int(buff1[1]))
+                    buff1 = f.readline()[:-1]
+
+                hp = int(f.readline()[:-1])
+                xp = int(f.readline()[:-1])
+                level_mult = float(f.readline()[:-1])
+                level = int(f.readline()[:-1])
+                cooldown = f.readline()[:-1]
+                cooldown = cooldown.split()
+                cooldown = [int(cooldown[0]), int(cooldown[1])]
+                protect = f.readline()[:-1]
+                if protect == '':
+                    protected = (None, 0)
+                    p_loc = (-1, -1)
+                else:
+                    protect = protect.split()
+                    protected = (True, int(protect[2]))
+                    p_loc = (int(protect[0]), int(protect[1]))
+                piece.load_save_data(hp, xp, level_mult, level, cooldown, protected, p_loc)
+
+                typ = f.readline()[:-1]
+            return True
+        except IOError:
+            return False
 
     @staticmethod
     def import_abilities():

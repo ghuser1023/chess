@@ -62,6 +62,9 @@ def on_mouse_press(x, y, button, modifiers):
 
 
 class Draw:
+    """
+    Contains graphical methods; responsible for actual displays.
+    """
     @staticmethod
     def draw_white_rect(x, y):
         """

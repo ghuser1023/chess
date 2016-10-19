@@ -5,6 +5,9 @@ import math
 
 
 class Pawn(Unit):
+    """
+    Represents a pawn. Weak, but useful on the front line.
+    """
     def __init__(self):
         moves = [(0, 1)]
         Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"], [self.arrowstorm])
@@ -20,7 +23,7 @@ class Pawn(Unit):
         """
         An ability that deals ranged damage to another unit.
         :param squares: should contain all the data necessary for the following parameters:
-        :param target: the enemy unit to be targeted by this ability.
+            target: the enemy unit to be targeted by this ability.
         :return: the relevant error message.
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
@@ -71,6 +74,9 @@ class Pawn(Unit):
 
 
 class Fort(Unit):
+    """
+    Represents a Fort. Useful defensively, but limited offensive capabilities.
+    """
     def __init__(self):
         moves = []
         for i in range(-8, 9):
@@ -91,7 +97,7 @@ class Fort(Unit):
         """
         Works exactly the same way as the Pawn's arrowstorm ability.
         :param squares: should contain all the data necessary for the following parameters:
-        :param target: the target to be fired upon.
+            target: the target to be fired upon.
         :return: the relevant error message.
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
@@ -112,6 +118,9 @@ class Fort(Unit):
 
 
 class Knight(Unit):
+    """
+    Represents a knight. Offensive unit with some potential for mobility.
+    """
     def __init__(self):
         moves = [(-1, -2), (-1, 2), (-2, -1), (-2, 1), (1, -2), (1, 2), (2, -1), (2, 1)]
         Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"], [self.charge, self.chivalry])
@@ -132,7 +141,7 @@ class Knight(Unit):
         This move does not count as a turn action; therefore the knight can then be used to attack or move again;
         alternatively, another unit may be moved.
         :param squares: should contain all the data necessary for the following parameters:
-        :param moveLoc: the place where the knight is to be moved initially.
+            the place where the knight is to be moved initially.
         :return: the relevant error message.
         """
         moveLoc = squares[0]
@@ -156,7 +165,8 @@ class Knight(Unit):
         """
         Buffs the knight's defense, then allows it to take a hit for a friendly unit.
         Note: this is not implemented (must alter deal_damage in the Piece class)
-        :param squares: should contain all the data necessary for the following parameters: [None]
+        :param squares: should contain all the data necessary for the following parameters:
+            target: the target that should be protected.
         :return: the relevant error message.
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
@@ -178,6 +188,9 @@ class Knight(Unit):
 
 
 class Bishop(Unit):
+    """
+    Represents a bishop. Support unit for the army.
+    """
     def __init__(self):
         moves = []
         for i in range(-8, 9):
@@ -199,7 +212,7 @@ class Bishop(Unit):
         """
         Heals a friendly target.
         :param squares: should contain all the data necessary for the following parameters:
-        :param target: the unit to be healed.
+            target: the unit to be healed.
         :return: the relevant error message.
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
@@ -237,6 +250,9 @@ class Bishop(Unit):
 
 
 class King(Unit):
+    """
+    Represents a king. Flagship piece of the army, weak physically but important emotionally.
+    """
     def __init__(self):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
@@ -256,10 +272,10 @@ class King(Unit):
         """
         Adds two mercenary pawns to the board.
         :param squares: should contain all the data necessary for the following parameters:
-        :param x1: the x-location of the first pawn.
-        :param y1: the y-location of the first pawn.
-        :param x2: the x-location of the second pawn.
-        :param y2: the y-location of the second pawn.
+            x1: the x-location of the first pawn.
+            y1: the y-location of the first pawn.
+            x2: the x-location of the second pawn.
+            y2: the y-location of the second pawn.
         :return: the relevant error message.
         """
         (x1, y1) = squares[0]
@@ -300,6 +316,9 @@ class King(Unit):
 
 
 class Queen(Unit):
+    """
+    Represents a queen. Capable of covert operations and significant mobility.
+    """
     def __init__(self):
         moves = []
         for i in range(-8, 9):
@@ -321,7 +340,7 @@ class Queen(Unit):
         """
         Debuffs and deals damage to target unit.
         :param squares: should contain all the data necessary for the following parameters:
-        :param target: the targeted unit.
+            target: the targeted unit.
         :return: the relevant error message.
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
@@ -357,3 +376,4 @@ class Queen(Unit):
             return "Ability not sufficiently cooled down."
 
 Unit.add_fort(Fort)
+unit_dict = {"Pawn":Pawn, "Fort":Fort, "Knight":Knight, "Bishop":Bishop, "King":King, "Queen":Queen}

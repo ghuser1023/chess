@@ -2,6 +2,9 @@
 
 
 class Unit(object):
+    """
+    This class represents a single unit. It is used as the parent class for each individual chess piece.
+    """
     fort = None
 
     def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils, mabils):
@@ -34,13 +37,14 @@ class Unit(object):
         self.name = name
         self.abils = abils
         self.mabils = mabils
-        self.protected = [None, 2]
+        self.protected = [False, 2]
+        self.protected_loc = (-1, -1)
 
     def get_protected(self):
         """
         :return: whether or not this unit is protected by chivalry.
         """
-        return self.protected[0] is not None
+        return self.protected[0]
 
     def add_protected(self, unit):
         """
@@ -48,7 +52,8 @@ class Unit(object):
         :param unit: the knight in question
         :return: None
         """
-        self.protected[0] = unit
+        self.protected[0] = True
+        self.protected_loc = self.board.get_loc(unit)
         self.protected[1] = 2
 
     def get_xp_drop(self):
@@ -162,8 +167,8 @@ class Unit(object):
         :param damage: the damage to be dealt to this unit.
         :return: None
         """
-        if self.protected[0] is not None:
-            self.protected[0].deal_damage(damage)
+        if self.protected[0]:
+            self.board.get_unit(self.protected_loc[0], self.protected_loc[1]).deal_damage(damage)
         else:
             buff = self.def_buff()
             self.hp -= (damage / buff)
@@ -249,7 +254,8 @@ class Unit(object):
         if self.protected[1] > 1:
             self.protected[1] -= 1
         else:
-            self.protected = [None, 0]
+            self.protected = [False, 0]
+            self.protected_loc = (-1, -1)
 
     def get_hp(self):
         """
@@ -306,6 +312,52 @@ class Unit(object):
         :return: the number of input squares necessary.
         """
         pass
+
+    def load_save_data(self, hp, xp, level_multiplier, level, cooldown, protected, protected_loc):
+        """
+        Loads past save data into this unit.
+        :param hp: the current health of this unit.
+        :param xp: the current experience of this unit.
+        :param level_multiplier: the current level multiplier (for the purpose of levelling up).
+        :param level: the current level of this unit.
+        :param cooldown: the current ability cooldowns.
+        :param protected: the current chivalry-status of this unit.
+        :param protected_loc: the current knight location.
+        :return: None
+        """
+        self.hp = hp
+        self.xp = xp
+        self.level_multiplier = level_multiplier
+        self.level = level
+        self.cooldown = cooldown
+        self.protected = protected
+        self.protected_loc = protected_loc
+
+    def get_save_data(self):
+        """
+        :return: a string that contains all data contained in this object.
+        """
+        save = ""
+        save += str(self.name) + "\n"
+        save += self.side.get_name() + "\n"
+        loc = self.board.get_loc(self)
+        save += str(loc[0]) + " " + str(loc[1]) + "\n"
+        for buff in self.buffs[0]:
+            save += str(buff[0]) + " " + str(buff[1]) + "\n"
+        save += "\n"
+        for buff in self.buffs[1]:
+            save += str(buff[0]) + " " + str(buff[1]) + "\n"
+        save += "\n"
+        save += str(self.hp) + "\n"
+        save += str(self.xp) + "\n"
+        save += str(self.level_multiplier) + "\n"
+        save += str(self.level) + "\n"
+        save += str(self.cooldown[0]) + " " + str(self.cooldown[1]) + "\n"
+        if self.protected[0]:
+            save += str(self.protected_loc[0]) + " " + str(self.protected_loc[1]) + " " + str(self.protected[1]) + "\n"
+        else:
+            save += "\n"
+        return save
 
     def __str__(self):
         """
