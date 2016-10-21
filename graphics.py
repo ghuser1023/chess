@@ -40,10 +40,7 @@ button_height = 25  # the default height of each button
 flip_height = 285  # the height of the board flipping button
 b_heights = (250, 375, 405, 450)  # the "big" button heights
 
-cur_abils = []  # the abilities that are currently displayed
-states = ["working", "select_unit", "unit_selected", "select_squares"]  # all possible states
-state = ["select_unit", None, 0, [], -1]  # the current state
-board_flipped = False  # whether or not the board should be flipped
+states = ("working", "select_unit", "unit_selected", "select_squares")  # all possible states
 
 
 class Utils(object):
@@ -77,7 +74,7 @@ class Utils(object):
         if x >= 0 and y >= 0 and x < p_size and y < p_size:
             return 0
         x -= abil_width_dist
-        if x >= 0 and y >= 0 and x < p_size and y < p_size and state[1].num_abils() > 1:
+        if x >= 0 and y >= 0 and x < p_size and y < p_size and game.edit_state()[1].num_abils() > 1:
             return 1
 
     @staticmethod
@@ -98,10 +95,12 @@ class Utils(object):
             elif b_heights[1] > y > (b_heights[1] - button_height):
                 return FileHandling.save
             elif b_heights[2] > y > (b_heights[2] - button_height):
+                game.set_state(["select_unit", None, 0, [], -1])
                 return FileHandling.load
             elif b_heights[3] > y > (b_heights[3] - button_height):
+                game.set_state(["select_unit", None, 0, [], -1])
                 return game.new_game
-        print("failed")
+        print("no button clicked")
         return None
 
     @staticmethod
@@ -110,8 +109,7 @@ class Utils(object):
         Changes the board_flipped statistic.
         :return: None
         """
-        global board_flipped
-        board_flipped = not board_flipped
+        game.flip()
 
 
 class Selections(object):
@@ -132,11 +130,11 @@ class Selections(object):
         if loc is not None:
             unit = game.get_board().get_unit(loc[0], loc[1])
             if unit is not None:
-                state[0] = "unit_selected"
-                state[1] = unit
-                cur_abils.clear()
+                game.edit_state()[0] = "unit_selected"
+                game.edit_state()[1] = unit
+                game.edit_cur_abils().clear()
                 for x in unit.abilities():
-                    cur_abils.append(x)
+                    game.edit_cur_abils().append(x)
 
     @staticmethod
     def select_general(method, x, y, error):
@@ -148,14 +146,14 @@ class Selections(object):
         :param error: the method name string (used for the error message to be displayed upon failure)
         :return: None
         """
-        if state[1].get_side() == game.get_cur_side():
-            worked = method(state[1], x, y)
+        if game.edit_state()[1].get_side() == game.get_cur_side():
+            worked = method(game.edit_state()[1], x, y)
             if worked:
                 game.switch_side()
                 game.get_board().end_turn()
-                state[0] = "select_unit"
-                state[1] = None
-                cur_abils.clear()
+                game.edit_state()[0] = "select_unit"
+                game.edit_state()[1] = None
+                game.edit_cur_abils().clear()
                 Selections.error = ""
             else:
                 Selections.error = "That " + error + " is invalid."
@@ -169,7 +167,7 @@ class Selections(object):
         :param loc: the board location of the move destination
         :return: None
         """
-        (a, b) = game.get_board().get_loc(state[1])
+        (a, b) = game.get_board().get_loc(game.edit_state()[1])
         (x, y) = loc
         Selections.select_general(game.get_board().move_unit, x - a, y - b, "move")
 
@@ -180,7 +178,7 @@ class Selections(object):
         :param loc: the board location of the attack target
         :return: None
         """
-        if game.get_board().get_unit(loc[0], loc[1]).get_side() == state[1].get_side():
+        if game.get_board().get_unit(loc[0], loc[1]).get_side() == game.edit_state()[1].get_side():
             Selections.error = "No friendly fire."
         else:
             Selections.select_general(game.get_board().attack_unit, loc[0], loc[1], "attack")
@@ -191,20 +189,20 @@ class Selections(object):
         Selects a certain ability.
         :return: None
         """
-        abil = state[4]
-        ability = state[1].abil_methods()[abil]
-        squares = state[3]
-        if state[1].get_side() == game.get_cur_side():
+        abil = game.edit_state()[4]
+        ability = game.edit_state()[1].abil_methods()[abil]
+        squares = game.edit_state()[3]
+        if game.edit_state()[1].get_side() == game.get_cur_side():
             error = ability(squares)
             if error == "":
-                state[0] = "unit_selected"
-                state[2] = 0
-                state[4] = -1
-                state[3].clear()
+                game.edit_state()[0] = "unit_selected"
+                game.edit_state()[2] = 0
+                game.edit_state()[4] = -1
+                game.edit_state()[3].clear()
             else:
                 Selections.error = error
-                state[2] = state[1].get_num_input(state[4])
-                state[3].clear()
+                game.edit_state()[2] = game.edit_state()[1].get_num_input(game.edit_state()[4])
+                game.edit_state()[3].clear()
         else:
             Selections.error = "It is " + game.get_cur_side().get_name() + " to move."
 
@@ -252,7 +250,7 @@ class FileHandling():
         """
         try:
             f = open("save.txt", 'r')
-            num_turns = f.readline()[:-1]
+            num_turns = int(f.readline()[:-1])
             cur_side = f.readline()[:-1]
             game.reset(num_turns, cur_side)
             typ = f.readline()[:-1]
@@ -266,7 +264,7 @@ class FileHandling():
                     side = game.get_black()
                 loc = f.readline()[:-1]
                 loc = (loc[0:1], loc[2:3])
-                game.get_board().add_unit(piece, loc[0], loc[1])
+                game.get_board().add_unit(piece, int(loc[0]), int(loc[1]))
                 side.add_unit(piece)
                 piece.set_board(game.get_board())
                 piece.set_side(side)
@@ -274,15 +272,15 @@ class FileHandling():
                 buff0 = f.readline()[:-1]
                 while buff0 != "":
                     buff0 = buff0.split()
-                    piece.buff_attack(int(buff0[0]), int(buff0[1]))
+                    piece.buff_attack(float(buff0[0]), int(buff0[1]))
                     buff0 = f.readline()[:-1]
                 buff1 = f.readline()[:-1]
                 while buff1 != "":
                     buff1 = buff1.split()
-                    piece.buff_health(int(buff1[0]), int(buff1[1]))
+                    piece.buff_health(float(buff1[0]), int(buff1[1]))
                     buff1 = f.readline()[:-1]
 
-                hp = int(f.readline()[:-1])
+                hp = float(f.readline()[:-1])
                 xp = int(f.readline()[:-1])
                 level_mult = float(f.readline()[:-1])
                 level = int(f.readline()[:-1])

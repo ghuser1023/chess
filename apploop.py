@@ -17,47 +17,47 @@ def on_mouse_press(x, y, button, modifiers):
     :return: None
     """
     if button == mouse.LEFT:
-        print(state)
-        if state[0] == "working":
+        print(game.edit_state())
+        if game.edit_state()[0] == "working":
             pass
         elif not Selections.select_button(x, y):
-            if state[0] == "select_unit":
+            if game.edit_state()[0] == "select_unit":
                 Selections.select_unit(x, y)
-            elif state[0] == "unit_selected":
+            elif game.edit_state()[0] == "unit_selected":
                 loc = Utils.loc_to_square(x, y)
                 if loc is not None:
                     unit = game.get_board().get_unit(loc[0], loc[1])
                     if unit is None:
                         Selections.select_move(loc)
-                    elif unit == state[1]:
-                        state[0] = "select_unit"
-                        state[1] = None
-                        cur_abils.clear()
-                    elif unit.get_side() == state[1].get_side():
+                    elif unit == game.edit_state()[1]:
+                        game.edit_state()[0] = "select_unit"
+                        game.edit_state()[1] = None
+                        game.edit_cur_abils().clear()
+                    elif unit.get_side() == game.edit_state()[1].get_side():
                         Selections.select_unit(x, y)
                     else:
                         Selections.select_attack(loc)
                 else:
                     abil = Utils.loc_to_ability(x, y)
                     if abil is not None:
-                        if state[1].get_num_input(abil) == 0:
+                        if game.edit_state()[1].get_num_input(abil) == 0:
                             Selections.select_ability()
                         else:
-                            state[0] = "select_squares"
-                            state[2] = state[1].get_num_input(abil)
-                            state[4] = abil
-            elif state[0] == "select_squares":
+                            game.edit_state()[0] = "select_squares"
+                            game.edit_state()[2] = game.edit_state()[1].get_num_input(abil)
+                            game.edit_state()[4] = abil
+            elif game.edit_state()[0] == "select_squares":
                 abil = Utils.loc_to_ability(x, y)
                 if abil is not None:
-                    state[0] = "unit_selected"
-                    state[2] = 0
-                    state[4] = -1
-                    state[3].clear()
+                    game.edit_state()[0] = "unit_selected"
+                    game.edit_state()[2] = 0
+                    game.edit_state()[4] = -1
+                    game.edit_state()[3].clear()
                 else:
                     loc = Utils.loc_to_square(x, y)
                     if loc is not None:
-                        state[3].append(loc)
-                    if len(state[3]) == state[2]:
+                        game.edit_state()[3].append(loc)
+                    if len(game.edit_state()[3]) == game.edit_state()[2]:
                         Selections.select_ability()
 
 
@@ -131,10 +131,10 @@ class Draw:
                                      ("v2i", (locx - 2, locy - 2, locx - 2, locy + p_size + 2,
                                               locx + p_size + 2, locy + p_size + 2, locx + p_size + 2, locy - 2)),
                                      ("c3B", (255, 255, 0) * 4))
-            if piece == state[1] and piece is not None:
+            if piece == game.edit_state()[1] and piece is not None:
                 Draw.draw_active(piece, locx, locy)
             pieceimages[side + typ + str(lvl)].blit(locx, locy)
-        if state[1] is None:
+        if game.edit_state()[1] is None:
             Draw.draw_passive()
 
     @staticmethod
@@ -182,22 +182,22 @@ class Draw:
         Draws the ability images.
         :return: None
         """
-        if state[4] != -1:
-            x = abil_init_width + abil_width_dist * state[4]
+        if game.edit_state()[4] != -1:
+            x = abil_init_width + abil_width_dist * game.edit_state()[4]
             y = top_bar - abil_bot_dist
             pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
                                  ("v2i", (x - 2, y - 2, x - 2, y + p_size + 2,
                                           x + p_size + 2, y + p_size + 2, x + p_size + 2, y - 2)),
                                  ("c3B", (255, 127, 63) * 4))
-        if len(cur_abils) > 0:
-            abilityimages[cur_abils[0]].blit(abil_init_width, top_bar - abil_bot_dist)
-            label = pyglet.text.Label(str(state[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
+        if len(game.edit_cur_abils()) > 0:
+            abilityimages[game.edit_cur_abils()[0]].blit(abil_init_width, top_bar - abil_bot_dist)
+            label = pyglet.text.Label(str(game.edit_state()[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
                                       x=abil_init_width + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
                                       anchor_x='center', anchor_y='center')
             label.draw()
-        if len(cur_abils) > 1:
-            abilityimages[cur_abils[1]].blit(abil_init_width + abil_width_dist, top_bar - abil_bot_dist)
-            label = pyglet.text.Label(str(state[1].get_cd_2()), font_name='Courier New', font_size=16, bold=True,
+        if len(game.edit_cur_abils()) > 1:
+            abilityimages[game.edit_cur_abils()[1]].blit(abil_init_width + abil_width_dist, top_bar - abil_bot_dist)
+            label = pyglet.text.Label(str(game.edit_state()[1].get_cd_2()), font_name='Courier New', font_size=16, bold=True,
                                       x=abil_init_width + abil_width_dist + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
                                       anchor_x='center', anchor_y='center')
             label.draw()
@@ -206,12 +206,12 @@ class Draw:
     @staticmethod
     def draw_message():
         """
-        Draws the user-friendly eror message.
+        Draws the user-friendly error message.
         :return: None
         """
         if Selections.error != "":
             label = pyglet.text.Label(Selections.error, font_name = 'Courier New', font_size = 11, bold = True,
-                                      x = w_length // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
+                                      x = 10*sq_size // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
             label.draw()
 
     @staticmethod
@@ -409,7 +409,7 @@ class Draw:
     @staticmethod
     def draw_board_flipping():
         dist_from_top = flip_height
-        if board_flipped:
+        if game.get_flipped():
             color = (127, 255, 127)
         else:
             color = (255, 127, 127)

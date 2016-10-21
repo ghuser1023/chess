@@ -327,6 +327,48 @@ class Game(object):
         self.num_turns = 1
         self.cur_side = self.white
         self.initialize_board()
+        self.cur_abils = []  # the abilities that are currently displayed
+        self.state = ["select_unit", None, 0, [], -1]  # the current state
+        self.board_flipped = False  # whether or not the board should be flipped
+
+    def edit_cur_abils(self):
+        """
+        :return: the current abilities.
+        """
+        return self.cur_abils
+
+    def set_cur_abils(self, abils):
+        """
+        :param abils: the current abilities to be set.
+        :return: None
+        """
+        self.cur_abils = abils
+
+    def edit_state(self):
+        """
+        :return: the current game state.
+        """
+        return self.state
+
+    def set_state(self, state):
+        """
+        :param state: the state that will be set to the current state.
+        :return: None
+        """
+        self.state = state
+
+    def get_flipped(self):
+        """
+        :return: whether or not the board should be flipped.
+        """
+        return self.board_flipped
+
+    def flip(self):
+        """
+        Toggles the board_flipped state.
+        :return: None
+        """
+        self.board_flipped = not self.board_flipped
 
     def reset(self, num_turns, cur_side):
         """
@@ -336,6 +378,9 @@ class Game(object):
         self.board = Board(self)
         self.white = Side("White")
         self.black = Side("Black")
+        self.white.add_opponent(self.black)
+        self.black.add_opponent(self.white)
+        self.board.set_sides(self.white, self.black)
         if cur_side == 'White':
             self.cur_side = self.white
         elif cur_side == 'Black':
@@ -391,8 +436,8 @@ class Game(object):
         Initializes self.board conditions.
         :return: None
         """
-        self.white.other = self.black
-        self.black.other = self.white
+        self.white.add_opponent(self.black)
+        self.black.add_opponent(self.white)
         self.board.set_sides(self.white, self.black)
         for x in range(8):
             wp = Pawn()

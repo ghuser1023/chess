@@ -175,7 +175,6 @@ class Unit(object):
             if self.hp < 0:
                 self.hp = 0
                 self.board.remove_unit(self)
-                self.side.remove_unit(self)
 
     def heal_damage(self, health):
         """
