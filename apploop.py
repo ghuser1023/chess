@@ -123,8 +123,11 @@ class Draw:
             side = str(piece.side)[0]
             typ = str(piece)[:1]
             lvl = piece.get_level()
-            locx = game.get_board().get_loc(piece)[0]*sq_size + piece_calib
-            locy = game.get_board().get_loc(piece)[1]*sq_size + top_bar + piece_calib
+            locx = game.get_board().get_loc(piece)[0] * sq_size + piece_calib
+            if not game.get_flipped() or game.get_cur_side() == game.get_white():
+                locy = game.get_board().get_loc(piece)[1] * sq_size + top_bar + piece_calib
+            else:
+                locy = (7 - game.get_board().get_loc(piece)[1]) * sq_size + top_bar + piece_calib
             # Drawing the "piece activated by chivalry" indicator (yellow)
             if piece.get_protected():
                 pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,

@@ -57,9 +57,11 @@ class Utils(object):
         """
         x //= sq_size
         y = (y - top_bar) // sq_size
-        if x > 0 and y > 0:
-            if x < 9 and y < 9:
-                return (x - 1, y - 1)
+        if 0 < x < 9 and 0 < y < 9:
+            if not game.get_flipped() or game.get_cur_side() == game.get_white():
+                return x-1, y-1
+            else:
+                return x-1, 8-y
 
     @staticmethod
     def loc_to_ability(x, y):
