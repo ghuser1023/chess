@@ -1,55 +1,11 @@
-1
+7
 White
 Pawn
 White
-4 1
+3 1
 
 
 10
-0
-1.1
-1
-0 0
-
-Queen
-Black
-3 7
-
-
-35
-0
-1.1
-1
-0 0
-
-Pawn
-White
-1 1
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-White
-2 1
-
-
-10
-0
-1.1
-1
-0 0
-
-Knight
-Black
-6 7
-
-
-50
 0
 1.1
 1
@@ -66,9 +22,20 @@ Black
 1
 0 0
 
+Fort
+Black
+0 7
+
+
+75
+0
+1.1
+1
+0 0
+
 Pawn
-White
-6 1
+Black
+3 6
 
 
 10
@@ -78,8 +45,30 @@ White
 0 0
 
 Pawn
+White
+4 2
+
+
+10
+0
+1.1
+1
+0 0
+
+Bishop
 Black
-3 6
+2 7
+
+
+20
+0
+1.1
+1
+0 0
+
+Pawn
+Black
+4 4
 
 
 10
@@ -99,61 +88,6 @@ White
 1
 0 0
 
-Pawn
-Black
-5 6
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-White
-3 1
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-Black
-4 6
-
-
-10
-0
-1.1
-1
-0 0
-
-Fort
-White
-0 0
-
-
-75
-0
-1.1
-1
-0 0
-
-Fort
-Black
-0 7
-
-
-75
-0
-1.1
-1
-0 0
-
 King
 Black
 4 7
@@ -165,9 +99,42 @@ Black
 1
 0 0
 
+Pawn
+Black
+5 6
+
+
+10
+0
+1.1
+1
+0 0
+
+Fort
+Black
+7 7
+
+
+75
+0
+1.1
+1
+0 0
+
+Pawn
+White
+6 2
+
+
+10
+0
+1.1
+1
+0 0
+
 Knight
 Black
-1 7
+6 7
 
 
 50
@@ -176,20 +143,9 @@ Black
 1
 0 0
 
-Bishop
-White
-5 0
-
-
-20
-0
-1.1
-1
-0 0
-
 Pawn
 Black
-2 6
+6 6
 
 
 10
@@ -197,6 +153,17 @@ Black
 1.1
 1
 0 0
+
+Queen
+Black
+4 6
+
+
+35
+0
+1.1
+1
+15 0
 
 Pawn
 White
@@ -220,45 +187,23 @@ Black
 1
 0 0
 
-Bishop
-Black
-2 7
-
-
-20
-0
-1.1
-1
-0 0
-
-Pawn
-Black
-1 6
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-Black
-6 6
-
-
-10
-0
-1.1
-1
-0 0
-
-King
+Fort
 White
-4 0
+0 0
 
 
-40
+75
+0
+1.1
+1
+0 0
+
+Knight
+White
+1 0
+
+
+50
 0
 1.1
 1
@@ -286,17 +231,6 @@ White
 1
 0 0
 
-Pawn
-Black
-0 6
-
-
-10
-0
-1.1
-1
-0 0
-
 Queen
 White
 3 0
@@ -308,12 +242,67 @@ White
 1
 0 0
 
-Fort
+Pawn
 Black
-7 7
+0 6
 
 
-75
+10
+0
+1.1
+1
+0 0
+
+Knight
+Black
+1 7
+
+
+50
+0
+1.1
+1
+0 0
+
+King
+White
+4 0
+
+
+40
+0
+1.1
+1
+0 0
+
+Pawn
+White
+1 1
+
+
+10
+0
+1.1
+1
+0 0
+
+Bishop
+White
+5 0
+
+
+20
+0
+1.1
+1
+0 0
+
+Pawn
+Black
+1 6
+
+
+10
 0
 1.1
 1
@@ -321,22 +310,22 @@ Black
 
 Knight
 White
-5 2
-2 1
+6 4
+0.5 2
 
 
-50
+46.0
 0
 1.1
 1
-10 0
+8 0
 
-Knight
+Pawn
 White
-1 0
+2 1
 
 
-50
+10
 0
 1.1
 1
@@ -348,6 +337,17 @@ White
 
 
 75
+0
+1.1
+1
+0 0
+
+Pawn
+Black
+2 6
+
+
+10
 0
 1.1
 1

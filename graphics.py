@@ -40,6 +40,7 @@ button_height = 25  # the default height of each button
 flip_height = 285  # the height of the board flipping button
 b_heights = (250, 375, 405, 450)  # the "big" button heights
 
+screens = ("game", "help", "title")  # all possible screens
 states = ("working", "select_unit", "unit_selected", "select_squares")  # all possible states
 
 
