@@ -315,7 +315,7 @@ class Draw:
     @staticmethod
     def draw_name():
         """
-        Draws the name of the game.
+        Draws the name of the game. [Legacy code]
         :return: None
         """
         dist_from_top = 35
@@ -395,7 +395,8 @@ class Draw:
         :return: None
         """
         Draw.draw_side_bar()
-        Draw.draw_name()
+        Draw.draw_hud_button(w_height - b_heights[4], "Back", (255, 255, 255))
+        Draw.draw_hud_button(w_height - b_heights[5], "Help", (255, 255, 191))
         Draw.draw_side_div(80)
         Draw.draw_move_owner()
         Draw.draw_side_div(155)

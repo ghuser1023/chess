@@ -38,7 +38,7 @@ side_label_color = (0, 0, 0, 255)  # the default color of the side labels
 button_width = 85  # the default width of each button
 button_height = 25  # the default height of each button
 flip_height = 285  # the height of the board flipping button
-b_heights = (250, 375, 405, 450)  # the "big" button heights
+b_heights = (250, 375, 405, 450, 35, 65)  # the "big" button heights
 
 title_button_dist = 163  # distance of the title buttons from the bottom of the screen
 title_dist = 100  # distance the title is displayed from the top of the screen
@@ -120,6 +120,12 @@ class Utils(object):
             elif b_heights[3] > y > (b_heights[3] - button_height):
                 game.set_state(["select_unit", None, 0, [], -1])
                 return game.new_game
+            elif b_heights[4] > y > (b_heights[4] - button_height):
+                game.set_screen("title")
+                return game.do_nothing
+            elif b_heights[5] > y > (b_heights[5] - button_height):
+                game.set_screen("help")
+                return game.do_nothing
         print("no button clicked")
         return None
 

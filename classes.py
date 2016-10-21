@@ -496,4 +496,11 @@ class Game(object):
         """
         self.__init__()
 
+    def do_nothing(self):
+        """
+        Does nothing.
+        :return: None
+        """
+        pass
+
 game = Game()
