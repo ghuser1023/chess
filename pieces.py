@@ -7,7 +7,7 @@ class Unit(object):
     """
     fort = None
 
-    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils, mabils):
+    def __init__(self, strength, hp, xp_drop, xp_threshold, moves, value, name, abils, mabils, melee):
         """
         :param strength: the default attack stat of this unit.
         :param hp: the maximum health value of this unit.
@@ -39,6 +39,7 @@ class Unit(object):
         self.mabils = mabils
         self.protected = [False, 2]
         self.protected_loc = (-1, -1)
+        self.melee = melee
 
     def get_protected(self):
         """
@@ -228,7 +229,12 @@ class Unit(object):
         :param y: the delta-y of the attack to be checked.
         :return: whether or not that attack is valid for this unit.
         """
-        return self.check_move(x, y)
+        if x != 0 and y != 0:
+            if self.melee and x <= 1 and y <= 1:
+                return True
+            if not self.melee and x <= 2 and y <= 2:
+                return True
+        return False
 
     def tick(self):
         """

@@ -10,7 +10,7 @@ class Pawn(Unit):
     """
     def __init__(self):
         moves = [(0, 1)]
-        Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"], [self.arrowstorm])
+        Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"], [self.arrowstorm], True)
 
     def get_num_input(self, abil):
         """
@@ -82,7 +82,7 @@ class Fort(Unit):
         for i in range(-8, 9):
             moves.append((0, i))
             moves.append((i, 0))
-        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"], [self.aerial_defense])
+        Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"], [self.aerial_defense], False)
 
     # Note: missing the fortify ability (must be implemented in Piece's deal_damage)
 
@@ -123,7 +123,7 @@ class Knight(Unit):
     """
     def __init__(self):
         moves = [(-1, -2), (-1, 2), (-2, -1), (-2, 1), (1, -2), (1, 2), (2, -1), (2, 1)]
-        Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"], [self.charge, self.chivalry])
+        Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"], [self.charge, self.chivalry], True)
 
     def get_num_input(self, abil):
         """
@@ -196,7 +196,7 @@ class Bishop(Unit):
         for i in range(-8, 9):
             moves.append((i, i))
             moves.append((-i, i))
-        Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop", ["regeneration", "piety"], [self.regeneration, self.piety])
+        Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop", ["regeneration", "piety"], [self.regeneration, self.piety], False)
 
     def get_num_input(self, abil):
         """
@@ -256,7 +256,7 @@ class King(Unit):
     def __init__(self):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-        Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King", ["call_to_arms", "rally"], [self.call_to_arms, self.rally])
+        Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King", ["call_to_arms", "rally"], [self.call_to_arms, self.rally], True)
 
     def get_num_input(self, abil):
         """
@@ -324,7 +324,7 @@ class Queen(Unit):
         for i in range(-8, 9):
             for j in range(-8, 9):
                 moves.append((i, j))
-        Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"], [self.subterfuge, self.influence])
+        Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"], [self.subterfuge, self.influence], False)
 
     def get_num_input(self, abil):
         """
