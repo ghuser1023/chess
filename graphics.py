@@ -139,7 +139,7 @@ class Selections(object):
                     game.edit_cur_abils().append(x)
 
     @staticmethod
-    def select_general(method, x, y, error):
+    def select_general(method, x, y, error, success):
         """
         A general selection method that calls a method (move or attack).
         :param method: the method to be called (move or attack)
@@ -156,7 +156,7 @@ class Selections(object):
                 game.edit_state()[0] = "select_unit"
                 game.edit_state()[1] = None
                 game.edit_cur_abils().clear()
-                Selections.error = ""
+                Selections.error = success
             else:
                 Selections.error = "That " + error + " is invalid."
         else:
@@ -171,7 +171,8 @@ class Selections(object):
         """
         (a, b) = game.get_board().get_loc(game.edit_state()[1])
         (x, y) = loc
-        Selections.select_general(game.get_board().move_unit, x - a, y - b, "move")
+        success = game.edit_state()[1].get_type() + " moved from " + file[a]+str(b+1) + " to " + file[x]+str(y+1) + "."
+        Selections.select_general(game.get_board().move_unit, x - a, y - b, "move", success)
 
     @staticmethod
     def select_attack(loc):
@@ -183,7 +184,10 @@ class Selections(object):
         if game.get_board().get_unit(loc[0], loc[1]).get_side() == game.edit_state()[1].get_side():
             Selections.error = "No friendly fire."
         else:
-            Selections.select_general(game.get_board().attack_unit, loc[0], loc[1], "attack")
+            (a, b) = game.get_board().get_loc(game.edit_state()[1])
+            (x, y) = loc
+            success = game.edit_state()[1].get_type() + " on " + file[a]+str(b+1) + " attacked " + file[x]+str(y+1) + "."
+            Selections.select_general(game.get_board().attack_unit, loc[0], loc[1], "attack", success)
 
     @staticmethod
     def select_ability():

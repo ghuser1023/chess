@@ -3,6 +3,7 @@
 from pieces import *
 import math
 
+file = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H'}
 
 class Pawn(Unit):
     """
@@ -28,17 +29,21 @@ class Pawn(Unit):
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
-            if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
-                if xDifference <= 2 and yDifference <= 2:
-                    target.deal_damage(math.ceil(.75 * self.effective_strength()))
-                    self.cooldown[0] = 4
-                    return ""
+            if not self.side == target.get_side():
+                if target is not None:
+                    xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                    yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                    if xDifference <= 2 and yDifference <= 2:
+                        target.deal_damage(math.ceil(.75 * self.effective_strength()))
+                        self.cooldown[0] = 4
+                        (a, b) = self.board.get_loc(self)
+                        return self.name + " on " + file[a]+str(b+1) + " casted arrowstorm."
+                    else:
+                        return "Target not in range."
                 else:
-                    return "Target not in range."
+                    return "Target does not exist."
             else:
-                return "Target does not exist."
+                return "No friendly fire."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -102,17 +107,21 @@ class Fort(Unit):
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
-            if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
-                if xDifference <= 2 and yDifference <= 2:
-                    target.deal_damage(math.ceil(.75 * self.effective_strength()))
-                    self.cooldown[0] = 4
-                    return ""
+            if not self.side == target.get_side():
+                if target is not None:
+                    xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                    yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                    if xDifference <= 2 and yDifference <= 2:
+                        target.deal_damage(math.ceil(.75 * self.effective_strength()))
+                        self.cooldown[0] = 4
+                        (a, b) = self.board.get_loc(self)
+                        return self.name + " on " + file[a] + str(b + 1) + " casted aerial defense."
+                    else:
+                        return "Target not in range."
                 else:
-                    return "Target not in range."
+                    return "Target does not exist."
             else:
-                return "Target does not exist."
+                return "No friendly fire."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -153,7 +162,8 @@ class Knight(Unit):
                     self.buff_attack(2, 1)
                     self.board.move_unit(self, moveLoc[0] - pos[0], moveLoc[1] - pos[1])
                     self.cooldown[0] = 10
-                    return ""
+                    (a, b) = self.board.get_loc(self)
+                    return self.name + " on " + file[a] + str(b + 1) + " casted charge."
                 else:
                     return "Cannot move into another unit."
             else:
@@ -171,18 +181,22 @@ class Knight(Unit):
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[1] == 0:
-            if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
-                if xDifference <= 2 and yDifference <= 2 and xDifference != 0 and yDifference != 0:
-                    target.add_protected(self)
-                    self.buff_health(1.5, 2)
-                    self.cooldown[1] = 10
-                    return ""
+            if self.side == target.get_side():
+                if target is not None:
+                    xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                    yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                    if xDifference <= 2 and yDifference <= 2 and xDifference != 0 and yDifference != 0:
+                        target.add_protected(self)
+                        self.buff_health(1.5, 2)
+                        self.cooldown[1] = 10
+                        (a, b) = self.board.get_loc(self)
+                        return self.name + " on " + file[a] + str(b + 1) + " casted chivalry."
+                    else:
+                        return "Target not in range."
                 else:
-                    return "Target not in range."
+                    return "Target does not exist."
             else:
-                return "Target does not exist."
+                return "Cannot protect enemy unit."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -217,12 +231,16 @@ class Bishop(Unit):
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
-            if target is not None:
-                target.heal_damage(1000)
-                self.cooldown[0] = 16
-                return ""
+            if self.side == target.get_side():
+                if target is not None:
+                    target.heal_damage(1000)
+                    self.cooldown[0] = 16
+                    (a, b) = self.board.get_loc(self)
+                    return self.name + " on " + file[a] + str(b + 1) + " casted regeneration."
+                else:
+                    return "Target does not exist."
             else:
-                return "Target does not exist."
+                return "Cannot heal enemy unit."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -244,7 +262,8 @@ class Bishop(Unit):
                 unit.buff_health(1.2, 3)
                 unit.buff_attack(1.1, 3)
             self.cooldown[1] = 12
-            return ""
+            (a, b) = self.board.get_loc(self)
+            return self.name + " on " + file[a] + str(b + 1) + " casted piety."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -293,7 +312,8 @@ class King(Unit):
                 self.side.add_unit(mercenary1)
                 self.side.add_unit(mercenary2)
                 self.cooldown[0] = 20
-                return ""
+                (a, b) = self.board.get_loc(self)
+                return self.name + " on " + file[a] + str(b + 1) + " casted call to arms."
             else:
                 return "Cannot spawn mercenaries on top of units."
         else:
@@ -310,7 +330,8 @@ class King(Unit):
         if self.cooldown[1] == 0:
             self.side.rally()
             self.cooldown[1] = 20
-            return ""
+            (a, b) = self.board.get_loc(self)
+            return self.name + " on " + file[a] + str(b + 1) + " casted rally."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -345,18 +366,22 @@ class Queen(Unit):
         """
         target = self.board.get_unit(squares[0][0], squares[0][1])
         if self.cooldown[0] == 0:
-            if target is not None:
-                xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
-                yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
-                if xDifference <= 5 and yDifference <= 5:
-                    target.buff_attack(.5, 3)
-                    target.deal_damage(math.ceil(.5 * self.effective_strength()))
-                    self.cooldown[0] = 16
-                    return ""
+            if not self.side == target.get_side():
+                if target is not None:
+                    xDifference = abs(self.board.get_loc(self)[0] - self.board.get_loc(target)[0])
+                    yDifference = abs(self.board.get_loc(self)[1] - self.board.get_loc(target)[1])
+                    if xDifference <= 5 and yDifference <= 5:
+                        target.buff_attack(.5, 3)
+                        target.deal_damage(math.ceil(.5 * self.effective_strength()))
+                        self.cooldown[0] = 16
+                        (a, b) = self.board.get_loc(self)
+                        return self.name + " on " + file[a] + str(b + 1) + " casted subterfuge."
+                    else:
+                        return "Target not in range."
                 else:
-                    return "Target not in range."
+                    return "Target does not exist."
             else:
-                return "Target does not exist."
+                return "No friendly fire."
         else:
             return "Ability not sufficiently cooled down."
 
@@ -371,7 +396,8 @@ class Queen(Unit):
         if self.cooldown[1] == 0:
             self.side.influence()
             self.cooldown[1] = 26
-            return ""
+            (a, b) = self.board.get_loc(self)
+            return self.name + " on " + file[a] + str(b + 1) + " casted influence."
         else:
             return "Ability not sufficiently cooled down."
 
