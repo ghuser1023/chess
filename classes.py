@@ -329,8 +329,15 @@ class Game(object):
         self.initialize_board()
         self.cur_abils = []  # the abilities that are currently displayed
         self.state = ["select_unit", None, 0, [], -1]  # the current state
+        self.previous = "title"  # the previous screen
         self.screen = "title"  # the current screen
         self.board_flipped = False  # whether or not the board should be flipped
+
+    def get_previous_screen(self):
+        """
+        :return: the previous screen.
+        """
+        return self.previous
 
     def get_cur_screen(self):
         """
@@ -343,6 +350,7 @@ class Game(object):
         Changes the current screen.
         :return: None
         """
+        self.previous = self.screen
         self.screen = screen
 
     def edit_cur_abils(self):

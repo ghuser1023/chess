@@ -40,6 +40,23 @@ button_height = 25  # the default height of each button
 flip_height = 285  # the height of the board flipping button
 b_heights = (250, 375, 405, 450)  # the "big" button heights
 
+title_button_dist = 163  # distance of the title buttons from the bottom of the screen
+title_dist = 100  # distance the title is displayed from the top of the screen
+
+thumb_side_dist = 80  # distance the thumbnails are from the sides of the screen
+thumb_height = 60  # height of the piece thumbnail buttons
+thumb_width = 60  # width of the piece thumbnail buttons
+thumb_heights = (370, 300, 230, 160, 90, 20)  # the heights of the piece thumbnails
+
+back_offset = 15  # the height at which the back button is displayed
+back_height = 26  # the vertical width of the back button
+
+par_x_offset = 15  # the left margin on the help screen
+col_2_offset = 230  # the left margin for the second help column
+help_title_y = 20  # the height at which the title is displayed
+help_abil_y = 60  # the height at which the ability names are displayed
+
+
 screens = ("game", "help", "title")  # all possible screens
 states = ("working", "select_unit", "unit_selected", "select_squares")  # all possible states
 
@@ -316,7 +333,9 @@ class FileHandling():
         :return: None
         """
         abilityimages["arrowstorm"] = pyglet.resource.image('abilities/Arrows.png')
+        abilityimages["solidarity"] = pyglet.resource.image('abilities/RedSquare.png')
         abilityimages["aerial_defense"] = pyglet.resource.image('abilities/Arrows.png')
+        abilityimages["fortify"] = pyglet.resource.image('abilities/RedSquare.png')
         abilityimages["call_to_arms"] = pyglet.resource.image('abilities/Call to Arms.png')
         abilityimages["charge"] = pyglet.resource.image('abilities/Charge.png')
         abilityimages["chivalry"] = pyglet.resource.image('abilities/Chivalry.png')

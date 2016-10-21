@@ -3,7 +3,7 @@
 from pieces import *
 import math
 
-file = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H'}
+file = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
 
 class Pawn(Unit):
     """
