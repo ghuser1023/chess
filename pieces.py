@@ -41,6 +41,14 @@ class Unit(object):
         self.protected_loc = (-1, -1)
         self.melee = melee
 
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens. Should be overriden in each subclass.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return None, None, None, None
+
     def get_protected(self):
         """
         :return: whether or not this unit is protected by chivalry.

@@ -56,8 +56,15 @@ col_2_offset = 230  # the left margin for the second help column
 help_title_y = 20  # the height at which the title is displayed
 help_abil_y = 60  # the height at which the ability names are displayed
 
+instruction_width = 400  # the width of the instructions
+instruction_height = 360  # the height of the instructions
+instruction_y_off = 165  # the y-offset of the instructions
 
-screens = ("game", "help", "title")  # all possible screens
+graph_offset = 90  # the y-offset of the graphs
+graph_width = instruction_width // 4  # the width of the graphs
+graph_height = 30  # the height of the graphs
+
+screens = ("game", "help", "title", "victory")  # all possible screens
 states = ("working", "select_unit", "unit_selected", "select_squares")  # all possible states
 
 

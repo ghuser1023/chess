@@ -13,6 +13,14 @@ class Pawn(Unit):
         moves = [(0, 1)]
         Unit.__init__(self, 3, 10, 1, 2, moves, 3, "Pawn", ["arrowstorm"], [self.arrowstorm], True)
 
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 3, 10, 1, 2
+
     def get_num_input(self, abil):
         """
         :param abil: the number of the ability
@@ -89,7 +97,13 @@ class Fort(Unit):
             moves.append((i, 0))
         Unit.__init__(self, 7, 75, 3, 3, moves, 10, "Fort", ["aerial_defense"], [self.aerial_defense], False)
 
-    # Note: missing the fortify ability (must be implemented in Piece's deal_damage)
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 7, 75, 3, 3
 
     def get_num_input(self, abil):
         """
@@ -133,6 +147,14 @@ class Knight(Unit):
     def __init__(self):
         moves = [(-1, -2), (-1, 2), (-2, -1), (-2, 1), (1, -2), (1, 2), (2, -1), (2, 1)]
         Unit.__init__(self, 10, 50, 5, 4, moves, 10, "Knight", ["charge", "chivalry"], [self.charge, self.chivalry], True)
+
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 10, 50, 5, 4
 
     def get_num_input(self, abil):
         """
@@ -212,6 +234,14 @@ class Bishop(Unit):
             moves.append((-i, i))
         Unit.__init__(self, 5, 20, 4, 3, moves, 15, "Bishop", ["regeneration", "piety"], [self.regeneration, self.piety], False)
 
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 5, 20, 4, 3
+
     def get_num_input(self, abil):
         """
         :param abil: the number of the ability
@@ -276,6 +306,14 @@ class King(Unit):
         self.rally_amt = 30
         moves = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
         Unit.__init__(self, 7, 40, 10, 3, moves, 100, "King", ["call_to_arms", "rally"], [self.call_to_arms, self.rally], True)
+
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 7, 40, 10, 3
 
     def get_num_input(self, abil):
         """
@@ -346,6 +384,14 @@ class Queen(Unit):
             for j in range(-8, 9):
                 moves.append((i, j))
         Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"], [self.subterfuge, self.influence], False)
+
+    @staticmethod
+    def get_key_stats():
+        """
+        Returns the key stats of the unit for display in the help screens.
+        :return: a tuple containing strength, hp, xp drops, and level up xp.
+        """
+        return 7, 35, 5, 3
 
     def get_num_input(self, abil):
         """

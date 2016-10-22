@@ -42,7 +42,7 @@ class Press(object):
         """
         if game.edit_state()[0] == "working":
             pass
-        elif not Selections.select_button(x, y):
+        elif not Selections.select_button(x, y) and game.get_cur_screen() != "victory":
             if game.edit_state()[0] == "select_unit":
                 Selections.select_unit(x, y)
             elif game.edit_state()[0] == "unit_selected":
@@ -122,6 +122,11 @@ class Press(object):
             for x in range(6):
                 if thumb_heights[x] + thumb_height > y > thumb_heights[x]:
                     Depict.cur_help_state = x
+        elif game.get_cur_screen() == 'help':
+            if Depict.cur_help_state == 'basic':
+                Depict.cur_help_state = 'basic2'
+            elif Depict.cur_help_state == 'basic2':
+                Depict.cur_help_state = 'basic'
 
 class Depict(object):
     """
@@ -130,6 +135,23 @@ class Depict(object):
     cur_help_state = 'basic'
     names = ("Pawn", "Fort", "Knight", "Bishop", "King", "Queen")
     types = ('p', 'r', 'n', 'b', 'k', 'q')
+    instruction_text = ("Arrowstorm: ranged attack for the pawn. Casted at a target within range 2. \n\nSolidarity: (passive ability) pawns gain attack and defense boosts whenever other friendly pawns are in range.",
+                        "Aerial Defense: ranged attack for the fort. Casted at a target within range 2. \n\nFortify: (passive ability) adjacent pieces gain defense boosts.",
+                        "Charge: moves the knight normally, buffing its attack. \n\nChivalry: chooses a unit within range 2 to protect and buffs defense, redirecting any attacks on that unit to this knight.",
+                        "Regeneration: heals target unit to full health. \n\nPiety: at range 2, all units gain temporary stat boosts.",
+                        "Call to Arms: spawns two mercenary pawns anywhere on the map. \n\nRally: buffs morale significantly for a certain amount of turns.",
+                        "Influence: sets all units' morale to 100 for 1 turn, effectively making every single action succeed the turn this move is used. \n\nSubterfuge: at large range, calls in spies to damage and debuff target unit.",
+#  For some reason, this string must be displayed this way. Don't question.
+                        "CAPTURING: Pieces are no longer captured instantaneously; pieces have health and attack statistics, and deal damage to other units. \n\n\
+ATTACKING: Pieces inflict damage in a certain radius depending on whether or not they are melee (3x3 box) or ranged (5x5 box). Pawns, Knights, and Kings are melee units, while Forts, Bishops and Queens are ranged units. \n\n\
+MORALE: Units now have a morale statistic, which determines their ability to be ordered around. \n\n\
+TURNS: You may move as many pieces or cast as many abilities as you want in your turn, subject only to the rule that a single piece may only take a single action in a turn. \n\n\
+(click anywhere to view next page)",
+                        "(click anywhere to view previous page) \n\n\
+VICTORY CONDITIONS:  The battle ends only when the opposing army is completely destroyed or the opposing commander surrenders. \n\n\
+PIECE EXPERIENCE: Pieces can gain experience as they defeat enemy units. When they gain enough experience, they level up, gaining stat increases and better appearance. \n\n\
+PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 'abilities', which have cooldown lengths until they can be used again. Additionally, there are some abilities that are not casted manually; rather, they are 'passive' and effective as long as the piece is alive.")
+# End weird code.
 
     @staticmethod
     def draw_background(color1 = (240, 240, 240), color2 = (220, 220, 220)):
@@ -205,17 +227,43 @@ class Depict(object):
         :return: None
         """
         if Depict.cur_help_state == 'basic':
-            Depict.draw_basic_instructions()
+            Depict.draw_basic_instructions(6)
+        elif Depict.cur_help_state == 'basic2':
+            Depict.draw_basic_instructions(7)
         else:
             Depict.draw_piece_instructions(Depict.cur_help_state)
 
     @staticmethod
-    def draw_basic_instructions():
+    def draw_layout(piece, x, y):
+        """
+        Draws an unformatted instruction paragraph at the given location.
+        :param x: the left x-location.
+        :param y: the center y-location.
+        :param scrollable: whether or not the text should be scrollable.
+        :return: None
+        """
+        document = pyglet.text.decode_text(Depict.instruction_text[piece])
+        document.set_style(0, len(Depict.instruction_text[piece]), dict(font_name='Courier New', font_size=11,
+                                                                        bold=True))
+        layout = pyglet.text.layout.TextLayout(document, instruction_width, instruction_height,
+                                               multiline=True, wrap_lines=True)
+        layout.anchor_x = 'left'
+        layout.anchor_y = 'top'
+        layout.x = x
+        layout.y = w_height - y
+        layout.draw()
+
+    @staticmethod
+    def draw_basic_instructions(num):
         """
         Draws the basic changes from normal chess on the screen.
         :return: None
         """
-        pass
+        label = pyglet.text.Label("Basic Instructions", font_name='Courier New', font_size=20, bold=True,
+                                  x=par_x_offset, y=w_height - help_title_y,
+                                  anchor_x='left', anchor_y='center', color=(0, 0, 0, 255))
+        label.draw()
+        Depict.draw_layout(num, par_x_offset, instruction_y_off - 115)
 
     @staticmethod
     def draw_piece_instructions(piece):
@@ -226,6 +274,8 @@ class Depict(object):
         """
         abils = (("arrowstorm", "solidarity"), ("aerial_defense", "fortify"), ("charge", "chivalry"),
                  ("piety", "regeneration"), ("call_to_arms", "rally"), ("subterfuge", "influence"))
+        actuals = (("Arrowstorm", "Solidarity"), ("Aerial Defense", "Fortify"), ("Charge", "Chivalry"),
+                   ("Piety", "Regeneration"), ("Call to Arms", "Rally"), ("Subterfuge", "Influence"))
         width = w_length - thumb_side_dist
         Draw.draw_button(width, thumb_heights[piece], Depict.names[piece], (125, 220, 255),
                          thumb_width, thumb_height, (0, 0, 0), 10, 15)
@@ -236,14 +286,30 @@ class Depict(object):
                                    anchor_x='left', anchor_y='center', color=(0, 0, 0, 255))
         label.draw()
         Draw.draw_button(par_x_offset + sq_size - p_size//2 + 2, w_height - help_abil_y - p_size//2 - 1,
-                         abils[piece][0][0].upper() + abils[piece][0][1:], (255, 255, 255),
+                         actuals[piece][0], (255, 255, 255),
                          col_2_offset - par_x_offset - 2*p_size, p_size, (0, 0, 0), 13)
         abilityimages[abils[piece][0]].blit(par_x_offset, w_height - help_abil_y - 15)
         Draw.draw_button(col_2_offset + sq_size - p_size//2 + 2, w_height - help_abil_y - p_size//2 - 1,
-                         abils[piece][1][0].upper() + abils[piece][1][1:], (255, 255, 255),
+                         actuals[piece][1], (255, 255, 255),
                          col_2_offset - par_x_offset - 2*p_size, p_size, (0, 0, 0), 13)
         abilityimages[abils[piece][1]].blit(col_2_offset, w_height - help_abil_y - 15)
+        Depict.draw_layout(piece, par_x_offset, instruction_y_off)
+        Depict.display_graph(piece)
 
+    @staticmethod
+    def display_graph(piece):
+        """
+        Draws a graph of the basic statistics of the piece.
+        :param piece: the number of the piece.
+        :return:
+        """
+        things = (("Strength", "Health", "XP Drop", "Level Up XP"), unit_dict[Depict.names[piece]].get_key_stats())
+        print(things)
+        for x in range(4):
+            for y in range(2):
+                Draw.draw_button(par_x_offset + graph_width*x, w_height - graph_offset - (y+1)*graph_height,
+                                 str(things[y][x]), (255, 255, 255),
+                                 graph_width, graph_height, (0, 0, 0), 10 + y)
 
 @window.event
 def on_draw():
@@ -272,5 +338,4 @@ def on_draw():
         Depict.draw_back_button()
         Depict.draw_piece_thumbnails()
         Depict.draw_instructions()
-
 
