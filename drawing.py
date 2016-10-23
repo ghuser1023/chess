@@ -149,12 +149,17 @@ class Draw:
 
 
     @staticmethod
-    def draw_message():
+    def draw_message(victory=False):
         """
         Draws the user-friendly error message.
         :return: None
         """
-        if Selections.error != "":
+        if victory:
+            label = pyglet.text.Label(game.get_cur_side().get_opponent().get_name() + " wins!",
+                                      font_name='Courier New', font_size=12, bold=True,
+                                      x=10 * sq_size // 2, y=msg_height, anchor_x='center', anchor_y='center')
+            label.draw()
+        elif Selections.error != "":
             label = pyglet.text.Label(Selections.error, font_name = 'Courier New', font_size = 11, bold = True,
                                       x = 10*sq_size // 2, y = msg_height, anchor_x = 'center', anchor_y = 'center')
             label.draw()
@@ -375,18 +380,10 @@ class Draw:
         else:
             color = (255, 127, 127)
         Draw.draw_hud_button(w_height - dist_from_top, "", color, p_size, p_size)
-        label1 = pyglet.text.Label("Toggle", font_name='Courier New', font_size=10, bold=True,
+        label1 = pyglet.text.Label("Flip Board", font_name='Courier New', font_size=10, bold=True,
                                    x=label_calib, y=w_height - dist_from_top - 10,
                                    anchor_x='center', anchor_y='center', color=side_label_color)
-        label2 = pyglet.text.Label("board", font_name='Courier New', font_size=10, bold=True,
-                                   x=label_calib, y=w_height - dist_from_top - 22,
-                                   anchor_x='center', anchor_y='center', color=side_label_color)
-        label3 = pyglet.text.Label("flipping", font_name='Courier New', font_size=10, bold=True,
-                                   x=label_calib, y=w_height - dist_from_top - 34,
-                                   anchor_x='center', anchor_y='center', color=side_label_color)
         label1.draw()
-        label2.draw()
-        label3.draw()
 
     @staticmethod
     def draw_side_display():
@@ -404,6 +401,8 @@ class Draw:
         Draw.draw_side_div(215)
         Draw.draw_hud_button(w_height - b_heights[0], "End Turn", (255, 255, 191))
         Draw.draw_board_flipping()
+        Draw.draw_button(label_calib - (button_width // 2 + 3), w_height - b_heights[6], "Surrender", (255, 255, 255),
+                         button_width + 6, button_height)
         Draw.draw_side_div(340)
         Draw.draw_hud_button(w_height - b_heights[1], "Save", (255, 255, 191))
         Draw.draw_hud_button(w_height - b_heights[2], "Load", (255, 255, 191))

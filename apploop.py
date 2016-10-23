@@ -6,7 +6,6 @@ from drawing import *
 window = pyglet.window.Window(w_length, w_height)
 window.set_caption("Chess 2")
 
-thisAlgorithmBecomingSkynetCost = 999999999
 
 @window.event
 def on_mouse_press(x, y, button, modifiers):
@@ -19,13 +18,15 @@ def on_mouse_press(x, y, button, modifiers):
     :return: None
     """
     if button == mouse.LEFT:
-        print(game.edit_state())
+        #print(game.edit_state())
         if game.get_cur_screen() == "game":
             Press.press_game(x, y)
         elif game.get_cur_screen() == "title":
             Press.press_title(x, y)
         elif game.get_cur_screen() == "help":
             Press.press_help(x, y)
+        elif game.get_cur_screen() == "victory":
+            Press.press_game(x, y)
 
 
 class Press(object):
@@ -95,14 +96,10 @@ class Press(object):
             if dist + 2*sq_size > y > dist + sq_size:
                 game.set_screen("game")
             elif dist + sq_size > y > dist:
-                # praise be our lord and savior, xkcd.com
-                global thisAlgorithmBecomingSkynetCost
-                thisAlgorithmBecomingSkynetCost = 999999999
-                pass  # AI
+                pass
             elif dist > y > dist - sq_size:
                 Depict.cur_help_state = 'basic'
                 game.set_screen("help")
-        print("no button pressed")
         return None
 
     @staticmethod
@@ -193,7 +190,7 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
         """
         Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist + sq_size, "2 Players", (255, 125, 125),
                          4*sq_size, sq_size - 6, (0, 0, 0), 14)
-        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist, "Player vs. AI", (255, 125, 125),
+        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist, "Player vs. AI", (125, 125, 125),
                          4*sq_size, sq_size - 6, (0, 0, 0), 14)
         Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist - sq_size, "Instructions", (255, 125, 125),
                          4*sq_size, sq_size - 6, (0, 0, 0), 14)
@@ -304,7 +301,6 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
         :return:
         """
         things = (("Strength", "Health", "XP Drop", "Level Up XP"), unit_dict[Depict.names[piece]].get_key_stats())
-        print(things)
         for x in range(4):
             for y in range(2):
                 Draw.draw_button(par_x_offset + graph_width*x, w_height - graph_offset - (y+1)*graph_height,
@@ -318,7 +314,7 @@ def on_draw():
     :return: None
     """
     window.clear()
-    if game.get_cur_screen() == "game":
+    if game.get_cur_screen() == "game" or game.get_cur_screen() == "victory":
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0,0,0,w_height,w_length,w_height,w_length,0)),
                              ("c3B", (127, 127, 127) * 4))
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
@@ -327,7 +323,7 @@ def on_draw():
         Draw.draw_board()
         Draw.draw_pieces()
         Draw.draw_ability_images()
-        Draw.draw_message()
+        Draw.draw_message(game.get_cur_screen() == "victory")
         Draw.draw_side_display()
     elif game.get_cur_screen() == "title":
         Depict.draw_background()

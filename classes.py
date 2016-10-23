@@ -166,12 +166,13 @@ class Board(object):
         Ends a turn; updates morale, removes dead units, and updates units.
         :return: None
         """
-        global num_turns
         for x in self.units.keys():
             x.tick()
-        game.get_white().tick()
-        game.get_black().tick()
-        game.next_turn()
+        self.game.get_white().tick()
+        self.game.get_black().tick()
+        self.game.next_turn()
+        if self.game.get_cur_side().get_num_units() == 0:
+            game.set_screen("victory")
 
     def get_pieces(self):
         """
@@ -495,6 +496,7 @@ class Game(object):
         :return: None
         """
         self.__init__()
+        self.screen = "game"
 
     def do_nothing(self):
         """

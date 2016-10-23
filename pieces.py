@@ -243,7 +243,7 @@ class Unit(object):
         :param y: the delta-y of the attack to be checked.
         :return: whether or not that attack is valid for this unit.
         """
-        print(x, y)
+        #print(x, y)
         if not (x == 0 and y == 0):
             if self.melee and x <= 1 and y <= 1:
                 return True

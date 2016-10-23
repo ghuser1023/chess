@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42e4342e-041f-4a04-a736-1a7cdc3a752e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apploop.py" afterPath="$PROJECT_DIR$/apploop.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes.py" afterPath="$PROJECT_DIR$/classes.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/drawing.py" afterPath="$PROJECT_DIR$/drawing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/graphics.py" afterPath="$PROJECT_DIR$/graphics.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pieces.py" afterPath="$PROJECT_DIR$/pieces.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/subpieces.py" afterPath="$PROJECT_DIR$/subpieces.py" />
     </list>
     <ignored path="chess.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,8 +30,8 @@
       <file leaf-file-name="pieces.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pieces.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="46" column="112" selection-start-line="46" selection-start-column="112" selection-end-line="46" selection-end-column="112" />
+            <state relative-caret-position="136">
+              <caret line="245" column="9" selection-start-line="245" selection-start-column="9" selection-end-line="245" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -40,8 +40,8 @@
       <file leaf-file-name="subpieces.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/subpieces.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1051">
-              <caret line="441" column="30" selection-start-line="441" selection-start-column="30" selection-end-line="441" selection-end-column="30" />
+            <state relative-caret-position="135">
+              <caret line="9" column="8" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="8" />
               <folding>
                 <element signature="e#40#60#0" expanded="true" />
               </folding>
@@ -52,18 +52,18 @@
       <file leaf-file-name="classes.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="323" column="32" selection-start-line="323" selection-start-column="32" selection-end-line="323" selection-end-column="32" />
+            <state relative-caret-position="-6551">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="graphics.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="graphics.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/graphics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
-              <caret line="241" column="44" selection-start-line="241" selection-start-column="44" selection-end-line="241" selection-end-column="44" />
+            <state relative-caret-position="823">
+              <caret line="143" column="14" selection-start-line="143" selection-start-column="9" selection-end-line="143" selection-end-column="14" />
               <folding>
                 <element signature="e#47#68#0" expanded="true" />
               </folding>
@@ -74,8 +74,8 @@
       <file leaf-file-name="drawing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/drawing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="88" column="38" selection-start-line="88" selection-start-column="32" selection-end-line="88" selection-end-column="38" />
+            <state relative-caret-position="-119">
+              <caret line="73" column="27" selection-start-line="73" selection-start-column="25" selection-end-line="73" selection-end-column="27" />
               <folding>
                 <element signature="e#63#85#0" expanded="true" />
               </folding>
@@ -83,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="apploop.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="apploop.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apploop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-582">
-              <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
+            <state relative-caret-position="198">
+              <caret line="190" column="54" selection-start-line="190" selection-start-column="54" selection-end-line="190" selection-end-column="54" />
               <folding>
                 <element signature="e#81#112#0" expanded="true" />
               </folding>
@@ -143,11 +143,11 @@
         <option value="$PROJECT_DIR$/board.py" />
         <option value="$PROJECT_DIR$/save.txt" />
         <option value="$PROJECT_DIR$/help.txt" />
-        <option value="$PROJECT_DIR$/drawing.py" />
-        <option value="$PROJECT_DIR$/classes.py" />
         <option value="$PROJECT_DIR$/subpieces.py" />
-        <option value="$PROJECT_DIR$/pieces.py" />
+        <option value="$PROJECT_DIR$/drawing.py" />
         <option value="$PROJECT_DIR$/graphics.py" />
+        <option value="$PROJECT_DIR$/pieces.py" />
+        <option value="$PROJECT_DIR$/classes.py" />
         <option value="$PROJECT_DIR$/apploop.py" />
       </list>
     </option>
@@ -597,36 +597,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pieces.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="245" column="9" selection-start-line="245" selection-start-column="9" selection-end-line="245" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/subpieces.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1051">
-          <caret line="441" column="30" selection-start-line="441" selection-start-column="30" selection-end-line="441" selection-end-column="30" />
+        <state relative-caret-position="135">
+          <caret line="9" column="8" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="8" />
           <folding>
             <element signature="e#40#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pieces.py">
+    <entry file="file://$PROJECT_DIR$/classes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="46" column="112" selection-start-line="46" selection-start-column="112" selection-end-line="46" selection-end-column="112" />
+        <state relative-caret-position="-6551">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classes.py">
+    <entry file="file://$PROJECT_DIR$/graphics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="323" column="32" selection-start-line="323" selection-start-column="32" selection-end-line="323" selection-end-column="32" />
-          <folding />
+        <state relative-caret-position="823">
+          <caret line="143" column="14" selection-start-line="143" selection-start-column="9" selection-end-line="143" selection-end-column="14" />
+          <folding>
+            <element signature="e#47#68#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/drawing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="88" column="38" selection-start-line="88" selection-start-column="32" selection-end-line="88" selection-end-column="38" />
+        <state relative-caret-position="-119">
+          <caret line="73" column="27" selection-start-line="73" selection-start-column="25" selection-end-line="73" selection-end-column="27" />
           <folding>
             <element signature="e#63#85#0" expanded="true" />
           </folding>
@@ -635,20 +645,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apploop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-582">
-          <caret line="48" column="47" selection-start-line="48" selection-start-column="47" selection-end-line="48" selection-end-column="47" />
+        <state relative-caret-position="198">
+          <caret line="190" column="54" selection-start-line="190" selection-start-column="54" selection-end-line="190" selection-end-column="54" />
           <folding>
             <element signature="e#81#112#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graphics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="241" column="44" selection-start-line="241" selection-start-column="44" selection-end-line="241" selection-end-column="44" />
-          <folding>
-            <element signature="e#47#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
