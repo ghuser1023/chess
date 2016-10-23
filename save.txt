@@ -1,16 +1,5 @@
-7
-White
-Pawn
-White
-3 1
-
-
-10
-0
-1.1
 1
-0 0
-
+White
 Bishop
 Black
 5 7
@@ -22,108 +11,9 @@ Black
 1
 0 0
 
-Fort
-Black
-0 7
-
-
-75
-0
-1.1
-1
-0 0
-
-Pawn
-Black
-3 6
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-White
-4 2
-
-
-10
-0
-1.1
-1
-0 0
-
-Bishop
-Black
-2 7
-
-
-20
-0
-1.1
-1
-0 0
-
-Pawn
-Black
-4 4
-
-
-10
-0
-1.1
-1
-0 0
-
-Pawn
-White
-5 1
-
-
-10
-0
-1.1
-1
-0 0
-
-King
-Black
-4 7
-
-
-40
-0
-1.1
-1
-0 0
-
 Pawn
 Black
 5 6
-
-
-10
-0
-1.1
-1
-0 0
-
-Fort
-Black
-7 7
-
-
-75
-0
-1.1
-1
-0 0
-
-Pawn
-White
-6 2
 
 
 10
@@ -144,6 +34,28 @@ Black
 0 0
 
 Pawn
+White
+6 1
+
+
+10
+0
+1.1
+1
+0 0
+
+Fort
+Black
+7 7
+
+
+75
+0
+1.1
+1
+0 0
+
+Pawn
 Black
 6 6
 
@@ -153,17 +65,6 @@ Black
 1.1
 1
 0 0
-
-Queen
-Black
-4 6
-
-
-35
-0
-1.1
-1
-15 0
 
 Pawn
 White
@@ -253,17 +154,6 @@ Black
 1
 0 0
 
-Knight
-Black
-1 7
-
-
-50
-0
-1.1
-1
-0 0
-
 King
 White
 4 0
@@ -310,15 +200,14 @@ Black
 
 Knight
 White
-6 4
-0.5 2
+6 0
 
 
-46.0
+50
 0
 1.1
 1
-8 0
+0 0
 
 Pawn
 White
@@ -345,6 +234,116 @@ White
 Pawn
 Black
 2 6
+
+
+10
+0
+1.1
+1
+0 0
+
+Fort
+Black
+0 7
+
+
+75
+0
+1.1
+1
+0 0
+
+Pawn
+White
+3 1
+
+
+10
+0
+1.1
+1
+0 0
+
+Knight
+Black
+1 7
+
+
+50
+0
+1.1
+1
+0 0
+
+Pawn
+Black
+3 6
+
+
+10
+0
+1.1
+1
+0 0
+
+Bishop
+Black
+2 7
+
+
+20
+0
+1.1
+1
+0 0
+
+Pawn
+White
+4 1
+
+
+10
+0
+1.1
+1
+0 0
+
+Queen
+Black
+3 7
+
+
+35
+0
+1.1
+1
+0 0
+
+Pawn
+Black
+4 6
+
+
+10
+0
+1.1
+1
+0 0
+
+King
+Black
+4 7
+
+
+40
+0
+1.1
+1
+0 0
+
+Pawn
+White
+5 1
 
 
 10
