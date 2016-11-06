@@ -282,13 +282,13 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
                                    x=par_x_offset, y=w_height - help_title_y,
                                    anchor_x='left', anchor_y='center', color=(0, 0, 0, 255))
         label.draw()
-        Draw.draw_button(par_x_offset + sq_size - p_size//2 + 2, w_height - help_abil_y - p_size//2 - 1,
+        Draw.draw_button(par_x_offset + sq_size - a_size//2 + 2, w_height - help_abil_y - a_size//2 - 1,
                          actuals[piece][0], (255, 255, 255),
-                         col_2_offset - par_x_offset - 2*p_size, p_size, (0, 0, 0), 13)
+                         col_2_offset - par_x_offset - 2*a_size, a_size, (0, 0, 0), 13)
         abilityimages[abils[piece][0]].blit(par_x_offset, w_height - help_abil_y - 15)
-        Draw.draw_button(col_2_offset + sq_size - p_size//2 + 2, w_height - help_abil_y - p_size//2 - 1,
+        Draw.draw_button(col_2_offset + sq_size - a_size//2 + 2, w_height - help_abil_y - a_size//2 - 1,
                          actuals[piece][1], (255, 255, 255),
-                         col_2_offset - par_x_offset - 2*p_size, p_size, (0, 0, 0), 13)
+                         col_2_offset - par_x_offset - 2*a_size, a_size, (0, 0, 0), 13)
         abilityimages[abils[piece][1]].blit(col_2_offset, w_height - help_abil_y - 15)
         Depict.draw_layout(piece, par_x_offset, instruction_y_off)
         Depict.display_graph(piece)

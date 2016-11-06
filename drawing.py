@@ -131,19 +131,19 @@ class Draw:
             x = abil_init_width + abil_width_dist * game.edit_state()[4]
             y = top_bar - abil_bot_dist
             pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-                                 ("v2i", (x - 2, y - 2, x - 2, y + p_size + 2,
-                                          x + p_size + 2, y + p_size + 2, x + p_size + 2, y - 2)),
+                                 ("v2i", (x - 2, y - 2, x - 2, y + a_size + 2,
+                                          x + a_size + 2, y + a_size + 2, x + a_size + 2, y - 2)),
                                  ("c3B", (255, 127, 63) * 4))
         if len(game.edit_cur_abils()) > 0:
             abilityimages[game.edit_cur_abils()[0]].blit(abil_init_width, top_bar - abil_bot_dist)
             label = pyglet.text.Label(str(game.edit_state()[1].get_cd_1()), font_name='Courier New', font_size=16, bold=True,
-                                      x=abil_init_width + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
+                                      x=abil_init_width + a_size//2, y=top_bar - abil_bot_dist - sq_size//2,
                                       anchor_x='center', anchor_y='center')
             label.draw()
         if len(game.edit_cur_abils()) > 1:
             abilityimages[game.edit_cur_abils()[1]].blit(abil_init_width + abil_width_dist, top_bar - abil_bot_dist)
             label = pyglet.text.Label(str(game.edit_state()[1].get_cd_2()), font_name='Courier New', font_size=16, bold=True,
-                                      x=abil_init_width + abil_width_dist + p_size//2, y=top_bar - abil_bot_dist - sq_size//2,
+                                      x=abil_init_width + abil_width_dist + a_size//2, y=top_bar - abil_bot_dist - sq_size//2,
                                       anchor_x='center', anchor_y='center')
             label.draw()
 

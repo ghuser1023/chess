@@ -5,6 +5,7 @@ import pyglet
 
 sq_size = 40  # the size of each square on the board
 p_size = 28  # the size of each piece thumbnail
+a_size = 32 # the size of each ability thumbnail
 pieceimages = {}
 abilityimages = {}
 
@@ -98,10 +99,10 @@ class Utils(object):
         """
         x -= abil_init_width
         y -= top_bar - abil_bot_dist
-        if x >= 0 and y >= 0 and x < p_size and y < p_size:
+        if x >= 0 and y >= 0 and x < a_size and y < a_size:
             return 0
         x -= abil_width_dist
-        if x >= 0 and y >= 0 and x < p_size and y < p_size and game.edit_state()[1].num_abils() > 1:
+        if x >= 0 and y >= 0 and x < a_size and y < a_size and game.edit_state()[1].num_abils() > 1:
             return 1
 
     @staticmethod
