@@ -5,7 +5,7 @@ import pyglet
 
 sq_size = 40  # the size of each square on the board
 p_size = 28  # the size of each piece thumbnail
-a_size = 32 # the size of each ability thumbnail
+a_size = 32  # the size of each ability thumbnail
 pieceimages = {}
 abilityimages = {}
 
@@ -15,7 +15,7 @@ top_bar = 80  # the distance from the bottom of the window to the board
 hud_cal = 65  # used to calibrate the HUD
 
 piece_calib = 46  # used to calibrate the drawing of pieces on the board
-abil_bot_dist = 6  # the vertical downwards distance of the abilities from the top of the HUD
+abil_bot_dist = 12  # the vertical downwards distance of the abilities from the top of the HUD
 abil_width_dist = 50  # the distance between the two ability thumbnails (left edge to left edge)
 abil_init_width = 276  # the distance to the left edge of the first ability
 msg_height = w_height - 20  # the height at which messages are drawn at
@@ -355,9 +355,9 @@ class FileHandling():
         :return: None
         """
         abilityimages["arrowstorm"] = pyglet.resource.image('abilities/Arrows.png')
-        abilityimages["solidarity"] = pyglet.resource.image('abilities/RedSquare.png')
+        abilityimages["solidarity"] = pyglet.resource.image('abilities/BeigeSquare.png')
         abilityimages["aerial_defense"] = pyglet.resource.image('abilities/Arrows.png')
-        abilityimages["fortify"] = pyglet.resource.image('abilities/RedSquare.png')
+        abilityimages["fortify"] = pyglet.resource.image('abilities/BeigeSquare.png')
         abilityimages["call_to_arms"] = pyglet.resource.image('abilities/Call to Arms.png')
         abilityimages["charge"] = pyglet.resource.image('abilities/Charge.png')
         abilityimages["chivalry"] = pyglet.resource.image('abilities/Chivalry.png')

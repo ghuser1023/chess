@@ -3,6 +3,7 @@
 from graphics import *
 import pyglet
 
+
 class Draw:
     """
     Contains graphical methods; responsible for actual displays.
