@@ -37,3 +37,8 @@ Art agenda:
         - Sample (normal scale) http://i.imgur.com/iuKyhkb.png
 - Icons?
     - Health, morale, current turn (# and side), level, ability cooldown
+- Longer term
+    - Create game font/switch it?
+    - Custom buttons 
+    - Tooltips?
+    - Hitsplats (http://runescape.wikia.com/wiki/Hitsplat)
