@@ -238,7 +238,6 @@ class Unit(object):
 
     def check_attack(self, x, y):
         """
-        Note: currently, this method uses the unit's moveset as its attackset.
         :param x: the delta-x of the attack to be checked.
         :param y: the delta-y of the attack to be checked.
         :return: whether or not that attack is valid for this unit.

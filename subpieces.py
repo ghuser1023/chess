@@ -85,6 +85,16 @@ class Pawn(Unit):
         buff *= Unit.def_buff(self)
         return buff
 
+    def check_move(self, x, y):
+        """
+        Overrides Unit's check_move to ensure that pawns can move two spaces at the beginning.
+        :param x: the delta-x of the move to be checked.
+        :param y: the delta-y of the move to be checked.
+        :return: whether or not that move is valid, considering special Pawn move rules.
+        """
+        loc = self.board.get_loc(self)
+        special = y == 2 and (loc[1] == 1 or loc[1] == 6)
+        return special or Unit.check_move(self, x, y)
 
 class Fort(Unit):
     """

@@ -98,9 +98,28 @@ class Board(object):
                 self.board[loc[0] + x][loc[1] + y] = unit
                 self.board[loc[0]][loc[1]] = None
                 self.units[unit] = (loc[0] + x, loc[1] + y)
+                if type(unit) == Pawn and (loc[1] + y == 0 or loc[1] + y == 7):
+                    self.promote(unit)
                 return True
         else:
             return False
+
+    def promote(self, pawn):
+        """
+        Promotes a pawn which has advanced to the 8th rank to a knight.
+        :param pawn: the pawn to be promoted.
+        :return: None
+        """
+        x, y = self.units[pawn]
+        pawn.get_side().remove_unit(pawn)
+        self.remove_unit(pawn)
+        knight = Knight()
+        while knight.get_level() < pawn.get_level():
+            knight.level_up()
+        damage = int((1-pawn.get_perhp())*knight.get_key_stats()[1])
+        knight.deal_damage(damage)
+        pawn.get_side().add_unit(knight)
+        self.add_unit(knight, x, y)
 
     def attack_unit(self, attacker, x, y):
         """
