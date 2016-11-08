@@ -18,9 +18,10 @@ def on_mouse_press(x, y, button, modifiers):
     :return: None
     """
     if button == mouse.LEFT:
-        #print(game.edit_state())
+        #  print(game.edit_state())
         if game.get_cur_screen() == "game":
-            Press.press_game(x, y)
+            if game.get_cur_side() != game.get_ai_side():
+                Press.press_game(x, y)
         elif game.get_cur_screen() == "title":
             Press.press_title(x, y)
         elif game.get_cur_screen() == "help":
@@ -96,7 +97,8 @@ class Press(object):
             if dist + 2*sq_size > y > dist + sq_size:
                 game.set_screen("game")
             elif dist + sq_size > y > dist:
-                pass
+                game.set_screen("game")
+                game.make_ai_game(game.get_black())
             elif dist > y > dist - sq_size:
                 Depict.cur_help_state = 'basic'
                 game.set_screen("help")
@@ -138,7 +140,7 @@ class Depict(object):
                         "Regeneration: heals target unit to full health. \n\nPiety: at range 2, all units gain temporary stat boosts.",
                         "Call to Arms: spawns two mercenary pawns anywhere on the map. \n\nRally: buffs morale significantly for a certain amount of turns.",
                         "Influence: sets all units' morale to 100 for 1 turn, effectively making every single action succeed the turn this move is used. \n\nSubterfuge: at large range, calls in spies to damage and debuff target unit.",
-#  For some reason, this string must be displayed this way. Don't question.
+                        #  For some reason, this string must be displayed this way. Don't question.
                         "CAPTURING: Pieces are no longer captured instantaneously; pieces have health and attack statistics, and deal damage to other units. \n\n\
 ATTACKING: Pieces inflict damage in a certain radius depending on whether or not they are melee (3x3 box) or ranged (5x5 box). Pawns, Knights, and Kings are melee units, while Forts, Bishops and Queens are ranged units. \n\n\
 MORALE: Units now have a morale statistic, which determines their ability to be ordered around. \n\n\
@@ -163,9 +165,9 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
                 else:
                     color = color2
                 pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
-                     ("v2i", (x * sq_size, y * sq_size, (x + 1) * sq_size, y * sq_size,
-                              (x + 1) * sq_size, (y + 1) * sq_size, x * sq_size, (y + 1) * sq_size)),
-                     ("c3B", color * 4))
+                                     ("v2i", (x * sq_size, y * sq_size, (x + 1) * sq_size, y * sq_size,
+                                              (x + 1) * sq_size, (y + 1) * sq_size, x * sq_size, (y + 1) * sq_size)),
+                                     ("c3B", color * 4))
 
     @staticmethod
     def draw_title():
@@ -215,7 +217,8 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
         for x in range(6):
             Draw.draw_button(width, thumb_heights[x], Depict.names[x], (255, 220, 125),
                              thumb_width, thumb_height, (0, 0, 0), 10, 15)
-            pieceimages['w' + Depict.types[x] + '1'].blit(width + thumb_width//4, thumb_heights[x] + thumb_height//4 + 10)
+            pieceimages['w' + Depict.types[x] + '1'].blit(width + thumb_width//4,
+                                                          thumb_heights[x] + thumb_height//4 + 10)
 
     @staticmethod
     def draw_instructions():
@@ -234,9 +237,9 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
     def draw_layout(piece, x, y):
         """
         Draws an unformatted instruction paragraph at the given location.
+        :param piece: the piece for which the instructions will be displayed.
         :param x: the left x-location.
         :param y: the center y-location.
-        :param scrollable: whether or not the text should be scrollable.
         :return: None
         """
         document = pyglet.text.decode_text(Depict.instruction_text[piece])
@@ -279,8 +282,8 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
         pieceimages['w' + Depict.types[piece] + '1'].blit(width + thumb_width // 4,
                                                           thumb_heights[piece] + thumb_height // 4 + 10)
         label = pyglet.text.Label(Depict.names[piece], font_name='Courier New', font_size=20, bold=True,
-                                   x=par_x_offset, y=w_height - help_title_y,
-                                   anchor_x='left', anchor_y='center', color=(0, 0, 0, 255))
+                                  x=par_x_offset, y=w_height - help_title_y,
+                                  anchor_x='left', anchor_y='center', color=(0, 0, 0, 255))
         label.draw()
         Draw.draw_button(par_x_offset + a_size, w_height - help_abil_y - a_size//2 + 1,
                          actuals[piece][0], (255, 255, 255),
@@ -307,6 +310,7 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
                                  str(things[y][x]), (255, 255, 255),
                                  graph_width, graph_height, (0, 0, 0), 10 + y)
 
+
 @window.event
 def on_draw():
     """
@@ -315,7 +319,7 @@ def on_draw():
     """
     window.clear()
     if game.get_cur_screen() == "game" or game.get_cur_screen() == "victory":
-        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0,0,0,w_height,w_length,w_height,w_length,0)),
+        pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON, ("v2i", (0, 0, 0, w_height, w_length, w_height, w_length, 0)),
                              ("c3B", (127, 127, 127) * 4))
         pyglet.graphics.draw(4, pyglet.gl.GL_POLYGON,
                              ("v2i", (10*sq_size + 2, 0, 10*sq_size + 2, w_height, w_length, w_height, w_length, 0)),

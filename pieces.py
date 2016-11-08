@@ -22,7 +22,7 @@ class Unit(object):
         """
         self.base_str = strength
         self.base_hp = hp
-        self.buffs = [[],[]]
+        self.buffs = [[], []]
         self.hp = hp
         self.xp = 0
         self.xp_drop = xp_drop
@@ -242,7 +242,7 @@ class Unit(object):
         :param y: the delta-y of the attack to be checked.
         :return: whether or not that attack is valid for this unit.
         """
-        #print(x, y)
+        #  print(x, y)
         if not (x == 0 and y == 0):
             if self.melee and x <= 1 and y <= 1:
                 return True
@@ -351,6 +351,12 @@ class Unit(object):
         self.cooldown = cooldown
         self.protected = protected
         self.protected_loc = protected_loc
+
+    def get_save_data_raw(self):
+        """
+        :return: a tuple that contains all data contained in this object.
+        """
+        return self.hp, self.xp, self.level_multiplier, self.level, self.cooldown, self.protected, self.protected_loc
 
     def get_save_data(self):
         """

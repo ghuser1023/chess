@@ -1,6 +1,6 @@
 # This file contains utilities and constants.
 
-from classes import *
+from computer import *
 import pyglet
 
 sq_size = 40  # the size of each square on the board
@@ -118,7 +118,7 @@ class Utils(object):
             if b_heights[0] > y > (b_heights[0] - button_height):
                 Selections.error = ""
                 game.switch_side()
-                return game.get_board().end_turn
+                return game.next_turn
             elif flip_height > y > (flip_height - button_height):
                 return Utils.flip_board
             elif b_heights[1] > y > (b_heights[1] - button_height):
@@ -192,7 +192,7 @@ class Selections(object):
             worked = method(game.edit_state()[1], x, y)
             if worked:
                 game.switch_side()
-                game.get_board().end_turn()
+                game.next_turn()
                 game.edit_state()[0] = "select_unit"
                 game.edit_state()[1] = None
                 game.edit_cur_abils().clear()
@@ -279,6 +279,7 @@ class FileHandling():
         """
         try:
             f = open("save.txt", 'w')
+            f.write(str(game.get_ai_side()) + "\n")
             f.write(str(game.get_num_turns()) + "\n")
             f.write(str(game.get_cur_side().get_name() + "\n"))
             pieces = game.get_board().get_pieces()
@@ -296,9 +297,14 @@ class FileHandling():
         """
         try:
             f = open("save.txt", 'r')
+            ai_side = f.readline()[:-1]
             num_turns = int(f.readline()[:-1])
             cur_side = f.readline()[:-1]
             game.reset(num_turns, cur_side)
+            if ai_side == 'white':
+                game.make_ai_game(game.get_white())
+            elif ai_side == 'black':
+                game.make_ai_game(game.get_black())
             typ = f.readline()[:-1]
 
             while typ != "End of file.":

@@ -7,8 +7,7 @@ class Board(object):
     """
     Represents the game board.
     """
-    def __init__(self, game):
-        self.game = game
+    def __init__(self):
         self.board = []
         self.units = {}
         self.side1 = None
@@ -78,7 +77,7 @@ class Board(object):
         :param loc: the delta-(x, y) of the move/attack
         :return: (x, y) if white; (x, -y) if black
         """
-        if unit.get_side() == game.get_black():
+        if unit.get_side() == self.side2:
             return loc[0], -loc[1]
         else:
             return loc
@@ -92,8 +91,8 @@ class Board(object):
         :return: whether or not the move was successful
         """
         loc = self.units[unit]
-        if (unit.get_side() == game.get_white() and unit.check_move(x,y)) \
-                or (unit.get_side() == game.get_black() and unit.check_move(x,-y)):
+        if (unit.get_side() == self.side1 and unit.check_move(x,y)) \
+                or (unit.get_side() == self.side2 and unit.check_move(x,-y)):
             if self.valid(loc[0] + x, loc[1] + y) and self.valid_path(unit, loc[0] + x, loc[1] + y):
                 self.board[loc[0] + x][loc[1] + y] = unit
                 self.board[loc[0]][loc[1]] = None
@@ -131,8 +130,8 @@ class Board(object):
         """
         (a, b) = self.units[attacker]
         defender = self.board[x][y]
-        if (attacker.get_side() == game.get_white() and attacker.check_attack(x - a, y - b)) or (
-                        attacker.get_side() == game.get_black() and attacker.check_attack(x - a, b - y)):
+        if (attacker.get_side() == self.side1 and attacker.check_attack(x - a, y - b)) or (
+                        attacker.get_side() == self.side2 and attacker.check_attack(x - a, b - y)):
             defender.deal_damage(attacker.effective_strength())
             if defender.isDead():
                 attacker.gain_xp(defender.get_xp_drop())
@@ -187,11 +186,8 @@ class Board(object):
         """
         for x in self.units.keys():
             x.tick()
-        self.game.get_white().tick()
-        self.game.get_black().tick()
-        self.game.next_turn()
-        if self.game.get_cur_side().get_num_units() == 0:
-            game.set_screen("victory")
+        self.side1.tick()
+        self.side2.tick()
 
     def get_pieces(self):
         """
@@ -227,6 +223,20 @@ class Board(object):
         if morale < 0:
             morale = 0
         return morale
+    
+    def determine_value(self, side):
+        """
+        Used by the AI method. Determines a bs valuation of the position of a side.
+        Currently uses the sum of (piece health * piece value) across all pieces of a side.
+            Needs to be updated for current purposes; rn will return the same number for all AI move choices
+        :param side: the side which will have its value determined.
+        :return: None
+        """
+        value = 0
+        for unit in self.units.keys():
+            if unit.get_side() == side:
+                value += unit.get_perhp()*unit.get_value()
+        return value
 
 
 class Side(object):
@@ -335,193 +345,3 @@ class Side(object):
         """
         return self.name.lower()
 
-
-class Game(object):
-    """
-    Represents the game itself.
-    """
-    def __init__(self):
-        self.board = Board(self)
-        self.white = Side("White")
-        self.black = Side("Black")
-        self.num_turns = 1
-        self.cur_side = self.white
-        self.initialize_board()
-        self.cur_abils = []  # the abilities that are currently displayed
-        self.state = ["select_unit", None, 0, [], -1]  # the current state
-        self.previous = "title"  # the previous screen
-        self.screen = "title"  # the current screen
-        self.board_flipped = False  # whether or not the board should be flipped
-
-    def get_previous_screen(self):
-        """
-        :return: the previous screen.
-        """
-        return self.previous
-
-    def get_cur_screen(self):
-        """
-        :return: the current screen.
-        """
-        return self.screen
-
-    def set_screen(self, screen):
-        """
-        Changes the current screen.
-        :return: None
-        """
-        self.previous = self.screen
-        self.screen = screen
-
-    def edit_cur_abils(self):
-        """
-        :return: the current abilities.
-        """
-        return self.cur_abils
-
-    def set_cur_abils(self, abils):
-        """
-        :param abils: the current abilities to be set.
-        :return: None
-        """
-        self.cur_abils = abils
-
-    def edit_state(self):
-        """
-        :return: the current game state.
-        """
-        return self.state
-
-    def set_state(self, state):
-        """
-        :param state: the state that will be set to the current state.
-        :return: None
-        """
-        self.state = state
-
-    def get_flipped(self):
-        """
-        :return: whether or not the board should be flipped.
-        """
-        return self.board_flipped
-
-    def flip(self):
-        """
-        Toggles the board_flipped state.
-        :return: None
-        """
-        self.board_flipped = not self.board_flipped
-
-    def reset(self, num_turns, cur_side):
-        """
-        Resets the game board in anticipation of a load.
-        :return:
-        """
-        self.board = Board(self)
-        self.white = Side("White")
-        self.black = Side("Black")
-        self.white.add_opponent(self.black)
-        self.black.add_opponent(self.white)
-        self.board.set_sides(self.white, self.black)
-        if cur_side == 'White':
-            self.cur_side = self.white
-        elif cur_side == 'Black':
-            self.cur_side = self.black
-        self.num_turns = num_turns
-
-    def get_cur_side(self):
-        """
-        :return: the current owner of the move.
-        """
-        return self.cur_side
-
-    def get_num_turns(self):
-        """
-        :return: the amount of turns elapsed.
-        """
-        return self.num_turns
-
-    def switch_side(self):
-        """
-        Switches the current side moving (called at end of turn).
-        :return: None
-        """
-        self.cur_side = self.cur_side.get_opponent()
-
-    def next_turn(self):
-        """
-        Increments the number of turns.
-        :return: None
-        """
-        self.num_turns += 1
-
-    def get_board(self):
-        """
-        :return: the board object
-        """
-        return self.board
-
-    def get_white(self):
-        """
-        :return: the white side
-        """
-        return self.white
-
-    def get_black(self):
-        """
-        :return: the black side
-        """
-        return self.black
-
-    def initialize_board(self):
-        """
-        Initializes self.board conditions.
-        :return: None
-        """
-        self.white.add_opponent(self.black)
-        self.black.add_opponent(self.white)
-        self.board.set_sides(self.white, self.black)
-        for x in range(8):
-            wp = Pawn()
-            bp = Pawn()
-            wp.set_board(self.board)
-            wp.set_side(self.white)
-            bp.set_board(self.board)
-            bp.set_side(self.black)
-            self.board.add_unit(wp, x, 1)
-            self.board.add_unit(bp, x, 6)
-            self.white.add_unit(wp)
-            self.black.add_unit(bp)
-        row_0 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
-        row_7 = [Fort(), Knight(), Bishop(), Queen(), King(), Bishop(), Knight(), Fort()]
-        column = 0
-        for piece in row_0:
-            piece.set_board(self.board)
-            piece.set_side(self.white)
-            self.board.add_unit(piece, column, 0)
-            self.white.add_unit(piece)
-            column += 1
-        column = 0
-        for piece in row_7:
-            piece.set_board(self.board)
-            piece.set_side(self.black)
-            self.board.add_unit(piece, column, 7)
-            self.black.add_unit(piece)
-            column += 1
-
-    def new_game(self):
-        """
-        Creates a new game.
-        :return: None
-        """
-        self.__init__()
-        self.screen = "game"
-
-    def do_nothing(self):
-        """
-        Does nothing.
-        :return: None
-        """
-        pass
-
-game = Game()

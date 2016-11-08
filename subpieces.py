@@ -5,6 +5,7 @@ import math
 
 file = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H')
 
+
 class Pawn(Unit):
     """
     Represents a pawn. Weak, but useful on the front line.
