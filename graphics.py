@@ -361,9 +361,9 @@ class FileHandling():
         :return: None
         """
         abilityimages["arrowstorm"] = pyglet.resource.image('abilities/Arrows.png')
-        abilityimages["solidarity"] = pyglet.resource.image('abilities/BeigeSquare.png')
-        abilityimages["aerial_defense"] = pyglet.resource.image('abilities/Arrows.png')
-        abilityimages["fortify"] = pyglet.resource.image('abilities/BeigeSquare.png')
+        abilityimages["solidarity"] = pyglet.resource.image('abilities/Solidarity.png')
+        abilityimages["aerial_defense"] = pyglet.resource.image('abilities/Cannonball.png')
+        abilityimages["fortify"] = pyglet.resource.image('abilities/Fortify.png')
         abilityimages["call_to_arms"] = pyglet.resource.image('abilities/Call to Arms.png')
         abilityimages["charge"] = pyglet.resource.image('abilities/Charge.png')
         abilityimages["chivalry"] = pyglet.resource.image('abilities/Chivalry.png')
