@@ -277,7 +277,10 @@ class FileHandling():
         :return: None
         """
         try:
-            f = open("save.txt", 'w')
+            if game.get_ai_side() is None:
+                f = open("save.txt", 'w')
+            else:
+                f = open("ai_save.txt", 'w')
             f.write(str(game.get_ai_side()) + "\n")
             f.write(str(game.get_num_turns()) + "\n")
             f.write(str(game.get_cur_side().get_name() + "\n"))
@@ -295,17 +298,29 @@ class FileHandling():
         :return: whether or not a save file was found.
         """
         try:
-            f = open("save.txt", 'r')
+            if game.get_ai_side() is None:
+                f = open("save.txt", 'r')
+            else:
+                f = open("ai_save.txt", 'r')
             ai_side = f.readline()[:-1]
             num_turns = int(f.readline()[:-1])
             cur_side = f.readline()[:-1]
-            game.reset(num_turns, cur_side)
-            if ai_side == 'white':
-                game.make_ai_game(game.get_white())
-            elif ai_side == 'black':
-                game.make_ai_game(game.get_black())
-            typ = f.readline()[:-1]
 
+            if game.get_ai_side() is not None:
+                if ai_side == 'white':
+                    game.make_ai_game(game.get_white())
+                elif ai_side == 'black':
+                    game.make_ai_game(game.get_black())
+                else:
+                    return False
+            else:
+                if ai_side == 'None':
+                    game.make_ai_game(None)
+                else:
+                    return False
+            game.reset(num_turns, cur_side)
+
+            typ = f.readline()[:-1]
             while typ != "End of file.":
                 piece = unit_dict[typ]()
                 side = f.readline()[:-1]
