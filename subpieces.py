@@ -393,7 +393,8 @@ class Queen(Unit):
         moves = []
         for i in range(-8, 9):
             for j in range(-8, 9):
-                moves.append((i, j))
+                if i == 0 or j == 0 or i == j or i == -j:
+                    moves.append((i, j))
         Unit.__init__(self, 7, 35, 5, 3, moves, 25, "Queen", ["subterfuge", "influence"], [self.subterfuge, self.influence], False)
 
     @staticmethod

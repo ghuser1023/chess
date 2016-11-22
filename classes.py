@@ -82,24 +82,33 @@ class Board(object):
         else:
             return loc
 
-    def move_unit(self, unit, x, y):
+    def move_unit(self, unit, x, y, sudo=False):
         """
         Moves a unit on the board.
         :param unit: the unit to be moved
         :param x: the delta-x of the move
         :param y: the delta-y of the move
+        :param sudo: whether or not the piece's movement abilities should be considered
         :return: whether or not the move was successful
         """
         loc = self.units[unit]
+        if type(unit) == Pawn:
+            print(loc)
+            print(x, y)
         if (unit.get_side() == self.side1 and unit.check_move(x,y)) \
-                or (unit.get_side() == self.side2 and unit.check_move(x,-y)):
-            if self.valid(loc[0] + x, loc[1] + y) and self.valid_path(unit, loc[0] + x, loc[1] + y):
-                self.board[loc[0] + x][loc[1] + y] = unit
-                self.board[loc[0]][loc[1]] = None
-                self.units[unit] = (loc[0] + x, loc[1] + y)
-                if type(unit) == Pawn and (loc[1] + y == 0 or loc[1] + y == 7):
-                    self.promote(unit)
-                return True
+                or (unit.get_side() == self.side2 and unit.check_move(x,-y)) or sudo:
+            if self.valid(loc[0] + x, loc[1] + y) and (self.valid_path(unit, loc[0] + x, loc[1] + y) or sudo):
+                if self.board[loc[0] + x][loc[1] + y] is None:
+                    self.board[loc[0] + x][loc[1] + y] = unit
+                    self.board[loc[0]][loc[1]] = None
+                    self.units[unit] = (loc[0] + x, loc[1] + y)
+                    if type(unit) == Pawn and (loc[1] + y == 0 or loc[1] + y == 7):
+                        self.promote(unit)
+                    return True
+                else:
+                    return False
+            else:
+                return False
         else:
             return False
 
@@ -130,12 +139,19 @@ class Board(object):
         """
         (a, b) = self.units[attacker]
         defender = self.board[x][y]
-        if (attacker.get_side() == self.side1 and attacker.check_attack(x - a, y - b)) or (
-                        attacker.get_side() == self.side2 and attacker.check_attack(x - a, b - y)):
-            defender.deal_damage(attacker.effective_strength())
-            if defender.isDead():
-                attacker.gain_xp(defender.get_xp_drop())
-            return True
+        if not attacker.get_attacked():
+            if (attacker.get_side() == self.side1 and attacker.check_attack(x - a, y - b)) or (
+                            attacker.get_side() == self.side2 and attacker.check_attack(x - a, b - y)):
+                if defender is not None:
+                    defender.deal_damage(attacker.effective_strength())
+                    if defender.isDead():
+                        attacker.gain_xp(defender.get_xp_drop())
+                    attacker.attack()
+                    return True
+                else:
+                    return False
+            else:
+                return False
         else:
             return False
 
@@ -175,7 +191,7 @@ class Board(object):
             while a != x or b != y:
                 a += c
                 b += d
-                if self.board[a][b] != None:
+                if self.board[a][b] is not None:
                     return False
             return True
 
@@ -223,20 +239,6 @@ class Board(object):
         if morale < 0:
             morale = 0
         return morale
-    
-    def determine_value(self, side):
-        """
-        Used by the AI method. Determines a bs valuation of the position of a side.
-        Currently uses the sum of (piece health * piece value) across all pieces of a side.
-            Needs to be updated for current purposes; rn will return the same number for all AI move choices
-        :param side: the side which will have its value determined.
-        :return: None
-        """
-        value = 0
-        for unit in self.units.keys():
-            if unit.get_side() == side:
-                value += unit.get_perhp()*unit.get_value()
-        return value
 
 
 class Side(object):
@@ -250,6 +252,12 @@ class Side(object):
         self.has_king = False
         self.rallied = 0
         self.influenced = False
+
+    def get_units(self):
+        """
+        :return: a list of the units. *NOT SAFE*
+        """
+        return self.units[:]
 
     def rally(self):
         """

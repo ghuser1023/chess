@@ -18,7 +18,7 @@ def on_mouse_press(x, y, button, modifiers):
     :return: None
     """
     if button == mouse.LEFT:
-        #  print(game.edit_state())
+        print(game.edit_state())
         if game.get_cur_screen() == "game":
             if game.get_cur_side() != game.get_ai_side():
                 Press.press_game(x, y)

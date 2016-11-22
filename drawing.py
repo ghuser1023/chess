@@ -348,10 +348,19 @@ class Draw:
             color = (0, 0, 0)
             name = "Black"
         Draw.draw_hud_button(w_height - dist_from_top, "", color, p_size, p_size, (127, 127, 255))
-        label1 = pyglet.text.Label(name, font_name='Courier New', font_size=11, bold=True,
+        if game.get_ai_side() is None:
+            msg1 = name
+            msg2 = "to move"
+        else:
+            msg2 = "Turn"
+            if game.get_ai_side() == game.get_cur_side():
+                msg1 = "Computer's"
+            else:
+                msg1 = "Your"
+        label1 = pyglet.text.Label(msg1, font_name='Courier New', font_size=11, bold=True,
                                    x=label_calib, y=w_height - dist_from_top - 10,
                                    anchor_x='center', anchor_y='center', color=side_label_color)
-        label2 = pyglet.text.Label("to move", font_name='Courier New', font_size=11, bold=True,
+        label2 = pyglet.text.Label(msg2, font_name='Courier New', font_size=11, bold=True,
                                    x=label_calib, y=w_height - dist_from_top - 20,
                                    anchor_x='center', anchor_y='center', color=side_label_color)
         label1.draw()

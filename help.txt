@@ -7,7 +7,7 @@ This is the help file for the enclosed game:
 RUNNING THE GAME
 
 1. If you do not have Python 3 installed, install Python 3.
-2.
+2. Install Pyglet (a graphics package).
 3. Run (double click) main.py.
 
 

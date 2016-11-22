@@ -138,6 +138,7 @@ class Game(object):
         :return: None
         """
         self.num_turns += 1
+        self.switch_side()
         self.board.end_turn()
         if self.get_cur_side().get_num_units() == 0:
             self.set_screen("victory")
@@ -225,16 +226,25 @@ class AI(object):
         self.board_copy = None
         self.white_copy = None
         self.black_copy = None
+        self.side_copy = None
+        self.order = ((0, -1), (-1, 0), (1, 0), (0, 1), (-1, -1), (1, -1), (1, 1), (-1, 1),
+                      (0, -2), (-1, -2), (1, -2), (-2, 0), (-2, -1), (-2, 1), (2, 0), (2, -1),
+                      (2, 1), (0, 2), (1, 2), (-1, 2), (-2, -2), (2, -2), (2, 2), (-2, 2))
 
     def copy_board(self):
         """
         Copies the current game board to the temporary copy held by the AI.
+        Currently unused.
         :return: None
         """
         board = self.game.get_board()
         self.board_copy = Board()
         self.white_copy = Side("C_White")
         self.black_copy = Side("C_Black")
+        if self.side == game.get_black():
+            self.side_copy = self.black_copy
+        else:
+            self.side_copy = self.white_copy
         for piece in board.get_pieces():
             new_piece = type(piece)()
             new_piece.load_save_data(piece.get_save_data_raw())
@@ -253,12 +263,68 @@ class AI(object):
         Current AI "strategy":
             Casts all abilities that have a chance of working.
                 Requires calculating a "perceived benefit" for several abilities; use threshold
+                ^ Because of that difficulty currently not implemented
             Makes all attacks that are valid.
             Moves a high-valued piece out of a calculated danger zone or threatens an enemy high-valued piece.
                 Requires optimizing across all possible moves -- hence copy_board and determine_value
         :return: None
         """
-        pass
+        max_value = None
+        ideal = None
+        for unit in self.side.get_units():
+            move_num = 0
+            if unit.get_melee():
+                max_move = 8
+            else:
+                max_move = 24
+            while move_num < max_move:
+                worked = self.game.get_board().attack_unit(unit, self.order[move_num][0], self.order[move_num][1])
+                if worked:
+                    break
+                move_num += 1
+        for unit in self.side.get_units():
+            for move in unit.get_moves():
+                if self.side == self.game.get_black():
+                    c_move = (move[0], -move[1])
+                else:
+                    c_move = (move[0], move[1])
+                worked = self.game.get_board().move_unit(unit, c_move[0], c_move[1])
+                if worked:
+                    value = self.determine_value()
+                    if max_value is None or max_value < value:
+                        max_value = value
+                        ideal = (unit, c_move[0], c_move[1])
+                    self.game.get_board().move_unit(unit, -c_move[0], -c_move[1], True)
+        print(ideal)
+        self.game.get_board().move_unit(ideal[0], ideal[1], ideal[2])
+
+    def determine_value(self):
+        """
+        Determines a bs valuation of the position of a side.
+        Currently determines (self attack potential - opponent attack potential), determined by the bs
+        attack order established above.
+        :return: the calculated "value" of the board position.
+        """
+        total = 0
+        for unit in self.side.get_units():
+            loc = self.game.get_board().get_loc(unit)
+            move_num = 0
+            max_move = 8
+            if not unit.get_melee():
+                max_move = 24
+            while move_num < max_move:
+                x = loc[0] + self.order[move_num][0]
+                if self.side == self.game.get_black:
+                    y = -loc[1] + self.order[move_num][1]
+                else:
+                    y = loc[1] + self.order[move_num][1]
+                other = self.game.get_board().get_unit(x, y)
+                if other is not None and other.get_side() != unit.get_side():
+                    total += 1
+                    break
+                move_num += 1
+        print(total)
+        return total
 
 
 game = Game()

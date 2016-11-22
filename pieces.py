@@ -40,6 +40,7 @@ class Unit(object):
         self.protected = [False, 2]
         self.protected_loc = (-1, -1)
         self.melee = melee
+        self.attacked_this_turn = False
 
     @staticmethod
     def get_key_stats():
@@ -226,6 +227,12 @@ class Unit(object):
             self.xp -= self.xp_threshold
             self.level_up()
 
+    def get_moves(self):
+        """
+        :return: the moveset of this unit.
+        """
+        return self.moves[:]
+
     def check_move(self, x, y):
         """
         :param x: the delta-x of the move to be checked.
@@ -235,6 +242,9 @@ class Unit(object):
         if (x, y) in self.moves:
             return True
         return False
+
+    def get_melee(self):
+        return self.melee
 
     def check_attack(self, x, y):
         """
@@ -249,6 +259,19 @@ class Unit(object):
             if not self.melee and x <= 2 and y <= 2:
                 return True
         return False
+
+    def get_attacked(self):
+        """
+        :return: whether or not this unit has made an attack this turn.
+        """
+        return self.attacked_this_turn
+
+    def attack(self):
+        """
+        Registers that this unit has already attacked and can no longer attack again.
+        :return: None
+        """
+        self.attacked_this_turn = True
 
     def tick(self):
         """
@@ -275,6 +298,7 @@ class Unit(object):
         else:
             self.protected = [False, 0]
             self.protected_loc = (-1, -1)
+        self.attacked_this_turn = False
 
     def get_hp(self):
         """

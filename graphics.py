@@ -117,7 +117,6 @@ class Utils(object):
         if (label_calib - button_width // 2) < x < (label_calib + button_width // 2):
             if b_heights[0] > y > (b_heights[0] - button_height):
                 Selections.error = ""
-                game.switch_side()
                 return game.next_turn
             elif flip_height > y > (flip_height - button_height):
                 return Utils.flip_board
@@ -191,8 +190,8 @@ class Selections(object):
         if game.edit_state()[1].get_side() == game.get_cur_side():
             worked = method(game.edit_state()[1], x, y)
             if worked:
-                game.switch_side()
-                game.next_turn()
+                if method == game.get_board().move_unit:
+                    game.next_turn()
                 game.edit_state()[0] = "select_unit"
                 game.edit_state()[1] = None
                 game.edit_cur_abils().clear()
