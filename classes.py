@@ -82,19 +82,17 @@ class Board(object):
         else:
             return loc
 
-    def move_unit(self, unit, x, y, sudo=False):
+    def move_unit(self, unit, x, y, ai=False, sudo=False):
         """
         Moves a unit on the board.
         :param unit: the unit to be moved
         :param x: the delta-x of the move
         :param y: the delta-y of the move
+        :param ai: who's calling this method
         :param sudo: whether or not the piece's movement abilities should be considered
         :return: whether or not the move was successful
         """
         loc = self.units[unit]
-        if type(unit) == Pawn:
-            print(loc)
-            print(x, y)
         if (unit.get_side() == self.side1 and unit.check_move(x,y)) \
                 or (unit.get_side() == self.side2 and unit.check_move(x,-y)) or sudo:
             if self.valid(loc[0] + x, loc[1] + y) and (self.valid_path(unit, loc[0] + x, loc[1] + y) or sudo):
@@ -129,20 +127,22 @@ class Board(object):
         pawn.get_side().add_unit(knight)
         self.add_unit(knight, x, y)
 
-    def attack_unit(self, attacker, x, y):
+    def attack_unit(self, attacker, x, y, ai=False):
         """
         Invokes an attack from one unit onto another.
         :param attacker: the unit doing the attacking.
         :param x: the x-location of the attack
         :param y: the y-location of the attack
+        :param ai: who's calling this method
         :return: whether or not the attack was successful.
         """
         (a, b) = self.units[attacker]
-        defender = self.board[x][y]
-        if not attacker.get_attacked():
+        if not attacker.get_attacked() and self.valid(x, y):
+            defender = self.board[x][y]
             if (attacker.get_side() == self.side1 and attacker.check_attack(x - a, y - b)) or (
                             attacker.get_side() == self.side2 and attacker.check_attack(x - a, b - y)):
-                if defender is not None:
+                if defender is not None and defender.get_side() != attacker.get_side():
+                    print(attacker)
                     defender.deal_damage(attacker.effective_strength())
                     if defender.isDead():
                         attacker.gain_xp(defender.get_xp_drop())
@@ -252,6 +252,13 @@ class Side(object):
         self.has_king = False
         self.rallied = 0
         self.influenced = False
+
+    def clear(self):
+        """
+        Clears all data from this object.
+        :return: None
+        """
+        self.__init__(self.name)
 
     def get_units(self):
         """

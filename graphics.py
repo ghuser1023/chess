@@ -278,9 +278,9 @@ class FileHandling():
         """
         try:
             if game.get_ai_side() is None:
-                f = open("save.txt", 'w')
+                f = open("saves/save.txt", 'w')
             else:
-                f = open("ai_save.txt", 'w')
+                f = open("saves/ai_save.txt", 'w')
             f.write(str(game.get_ai_side()) + "\n")
             f.write(str(game.get_num_turns()) + "\n")
             f.write(str(game.get_cur_side().get_name() + "\n"))
@@ -299,9 +299,9 @@ class FileHandling():
         """
         try:
             if game.get_ai_side() is None:
-                f = open("save.txt", 'r')
+                f = open("saves/save.txt", 'r')
             else:
-                f = open("ai_save.txt", 'r')
+                f = open("saves/ai_save.txt", 'r')
             ai_side = f.readline()[:-1]
             num_turns = int(f.readline()[:-1])
             cur_side = f.readline()[:-1]

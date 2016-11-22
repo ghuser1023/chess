@@ -4,7 +4,7 @@ from graphics import *
 import pyglet
 
 
-class Draw:
+class Draw(object):
     """
     Contains graphical methods; responsible for actual displays.
     """
@@ -277,7 +277,8 @@ class Draw:
                              ("c3B", (0, 0, 0) * 4))
 
     @staticmethod
-    def draw_button(width, height, text, color, w=button_width, h=button_height, secondary=(0, 0, 0), size=11, offset=0):
+    def draw_button(width, height, text, color, w=button_width, h=button_height, secondary=(0, 0, 0), size=11, offset=0,
+                    text_color=(0, 0, 0, 255)):
         """
         Draws a button on the side.
         :param width: the width at which the button will be drawn (this is the left width)
@@ -289,6 +290,7 @@ class Draw:
         :param secondary: the border color of the button
         :param size: the font size of the label
         :param offset: used to calibrate the position of the label within the button
+        :param text_color: the color of the text
         :return: None
         """
         th = 2
@@ -301,7 +303,7 @@ class Draw:
                          ("c3B", color * 4))
         label = pyglet.text.Label(text, font_name='Courier New', font_size=size, bold=True,
                                   x=width + w // 2, y=height + h // 2 - offset,
-                                  anchor_x='center', anchor_y='center', color=(0, 0, 0, 255))
+                                  anchor_x='center', anchor_y='center', color=text_color)
         label.draw()
 
     @staticmethod

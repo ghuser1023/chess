@@ -94,15 +94,19 @@ class Press(object):
         """
         dist = 163
         if (w_length//2 - 2*sq_size) < x < (w_length//2 + 2*sq_size):
-            if dist + 2*sq_size > y > dist + sq_size:
+            if dist + sq_size*5//2 > y > dist + sq_size*3//2:
                 game.set_screen("game")
                 game.new_game()
                 game.make_ai_game(None)
-            elif dist + sq_size > y > dist:
+            elif dist + sq_size*3//2 > y > dist + sq_size*1//2:
                 game.set_screen("game")
                 game.new_game()
                 game.make_ai_game(game.get_black())
-            elif dist > y > dist - sq_size:
+            elif dist + sq_size*1//2 > y > dist - sq_size*1//2:
+                game.set_screen("game")
+                game.new_game()
+                game.make_ai_game(game.get_white())
+            elif dist - sq_size*1//2 > y > dist - sq_size*3//2:
                 Depict.cur_help_state = 'basic'
                 game.set_screen("help")
         return None
@@ -129,6 +133,7 @@ class Press(object):
                 Depict.cur_help_state = 'basic2'
             elif Depict.cur_help_state == 'basic2':
                 Depict.cur_help_state = 'basic'
+
 
 class Depict(object):
     """
@@ -193,12 +198,14 @@ PIECE ABILITIES: In addition to attacking, pieces may elect to use one of their 
         Draws the Player v. Player, Player v. AI, and Instructions buttons.
         :return: None
         """
-        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist + sq_size, "2 Players", (255, 125, 125),
-                         4*sq_size, sq_size - 6, (0, 0, 0), 14)
-        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist, "Player vs. AI", (125, 125, 125),
-                         4*sq_size, sq_size - 6, (0, 0, 0), 14)
-        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist - sq_size, "Instructions", (255, 125, 125),
-                         4*sq_size, sq_size - 6, (0, 0, 0), 14)
+        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist + sq_size*3//2, "2 Players",
+                         (255, 125, 125), 4*sq_size, sq_size - 6, (0, 0, 0), 14)
+        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist + sq_size*1//2, "White vs. AI",
+                         (255, 255, 255), 4*sq_size, sq_size - 6, (0, 0, 0), 14)
+        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist - sq_size*1//2, "Black vs. AI",
+                         (63, 63, 63), 4 * sq_size, sq_size - 6, (0, 0, 0), 14, text_color=(255, 255, 255, 255))
+        Draw.draw_button(w_length // 2 - (4*sq_size) // 2, title_button_dist - sq_size*3//2, "Instructions",
+                         (255, 125, 125), 4*sq_size, sq_size - 6, (0, 0, 0), 14)
 
     @staticmethod
     def draw_back_button():

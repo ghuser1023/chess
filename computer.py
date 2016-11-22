@@ -30,6 +30,9 @@ class Game(object):
         """
         self.ai_side = side
         self.ai = AI(side, self)
+        if self.ai_side == self.white and self.num_turns == 1:
+            self.ai.choose_decision()
+            self.next_turn()
 
     def get_ai_side(self):
         """
@@ -202,11 +205,20 @@ class Game(object):
 
     def new_game(self):
         """
-        Creates a new game.
+        Creates a new game, but retains the current menu selection.
         :return: None
         """
-        self.__init__()
+        self.board = Board()
+        self.white.clear()
+        self.black.clear()
+        self.num_turns = 1
+        self.cur_side = self.white
+        self.initialize_board()
+        self.cur_abils = []
+        self.state = ["select_unit", None, 0, [], -1]
+        self.previous = "title"
         self.screen = "game"
+        self.board_flipped = False
 
     def do_nothing(self):
         """
@@ -273,12 +285,17 @@ class AI(object):
         ideal = None
         for unit in self.side.get_units():
             move_num = 0
+            loc = self.game.get_board().get_loc(unit)
             if unit.get_melee():
                 max_move = 8
             else:
                 max_move = 24
             while move_num < max_move:
-                worked = self.game.get_board().attack_unit(unit, self.order[move_num][0], self.order[move_num][1])
+                if self.side == self.game.get_black():
+                    c_move = (loc[0] + self.order[move_num][0], loc[1] - self.order[move_num][1])
+                else:
+                    c_move = (loc[0] + self.order[move_num][0], loc[1] + self.order[move_num][1])
+                worked = self.game.get_board().attack_unit(unit, c_move[0], c_move[1], True)
                 if worked:
                     break
                 move_num += 1
@@ -294,8 +311,8 @@ class AI(object):
                     if max_value is None or max_value < value:
                         max_value = value
                         ideal = (unit, c_move[0], c_move[1])
-                    self.game.get_board().move_unit(unit, -c_move[0], -c_move[1], True)
-        print(ideal)
+                    self.game.get_board().move_unit(unit, -c_move[0], -c_move[1], True, True)
+        #print(ideal)
         self.game.get_board().move_unit(ideal[0], ideal[1], ideal[2])
 
     def determine_value(self):
@@ -323,7 +340,7 @@ class AI(object):
                     total += 1
                     break
                 move_num += 1
-        print(total)
+        #print(total)
         return total
 
 

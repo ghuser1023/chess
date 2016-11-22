@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="42e4342e-041f-4a04-a736-1a7cdc3a752e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ai_save.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/ai_save.txt" afterPath="$PROJECT_DIR$/saves/ai_save.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/save.txt" afterPath="$PROJECT_DIR$/saves/save.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apploop.py" afterPath="$PROJECT_DIR$/apploop.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes.py" afterPath="$PROJECT_DIR$/classes.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/computer.py" afterPath="$PROJECT_DIR$/computer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/drawing.py" afterPath="$PROJECT_DIR$/drawing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/graphics.py" afterPath="$PROJECT_DIR$/graphics.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/save.txt" afterPath="$PROJECT_DIR$/save.txt" />
     </list>
     <ignored path="chess.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,8 +33,8 @@
       <file leaf-file-name="pieces.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pieces.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="419" column="53" selection-start-line="419" selection-start-column="53" selection-end-line="419" selection-end-column="53" />
+            <state relative-caret-position="137">
+              <caret line="94" column="16" selection-start-line="94" selection-start-column="8" selection-end-line="94" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -41,18 +43,18 @@
       <file leaf-file-name="subpieces.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/subpieces.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3855">
+            <state relative-caret-position="5850">
               <caret line="391" column="13" selection-start-line="391" selection-start-column="13" selection-end-line="391" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="classes.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="classes.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+            <state relative-caret-position="420">
+              <caret line="155" column="24" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -61,18 +63,18 @@
       <file leaf-file-name="computer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/computer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-565">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+            <state relative-caret-position="164">
+              <caret line="297" column="0" selection-start-line="297" selection-start-column="0" selection-end-line="297" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="graphics.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="graphics.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/graphics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4605">
-              <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+            <state relative-caret-position="195">
+              <caret line="130" column="64" selection-start-line="130" selection-start-column="64" selection-end-line="130" selection-end-column="64" />
               <folding>
                 <element signature="e#47#69#0" expanded="true" />
               </folding>
@@ -83,8 +85,8 @@
       <file leaf-file-name="drawing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/drawing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5460">
-              <caret line="364" column="50" selection-start-line="364" selection-start-column="50" selection-end-line="364" selection-end-column="50" />
+            <state relative-caret-position="4560">
+              <caret line="304" column="0" selection-start-line="304" selection-start-column="0" selection-end-line="304" selection-end-column="0" />
               <folding>
                 <element signature="e#63#85#0" expanded="true" />
               </folding>
@@ -95,8 +97,8 @@
       <file leaf-file-name="apploop.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apploop.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="100" column="24" selection-start-line="100" selection-start-column="24" selection-end-line="100" selection-end-column="24" />
+            <state relative-caret-position="1140">
+              <caret line="98" column="31" selection-start-line="98" selection-start-column="31" selection-end-line="98" selection-end-column="31" />
               <folding>
                 <element signature="e#81#112#0" expanded="true" />
               </folding>
@@ -162,12 +164,12 @@
         <option value="$PROJECT_DIR$/../../Projects/math/mathpkg1.py" />
         <option value="$PROJECT_DIR$/help.txt" />
         <option value="$PROJECT_DIR$/pieces.py" />
-        <option value="$PROJECT_DIR$/drawing.py" />
         <option value="$PROJECT_DIR$/subpieces.py" />
-        <option value="$PROJECT_DIR$/classes.py" />
+        <option value="$PROJECT_DIR$/graphics.py" />
+        <option value="$PROJECT_DIR$/drawing.py" />
         <option value="$PROJECT_DIR$/apploop.py" />
         <option value="$PROJECT_DIR$/computer.py" />
-        <option value="$PROJECT_DIR$/graphics.py" />
+        <option value="$PROJECT_DIR$/classes.py" />
       </list>
     </option>
   </component>
@@ -232,6 +234,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/saves" />
       <recent name="$PROJECT_DIR$/abilities" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -468,9 +471,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="813" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22410148" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22410148" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32855093" sideWeight="0.5278365" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32855093" sideWeight="0.4947146" order="1" side_tool="false" content_ui="tabs" />
@@ -814,7 +817,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/board.py" />
-    <entry file="file://$PROJECT_DIR$/save.txt">
+    <entry file="file://$PROJECT_DIR$/saves/save.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -871,65 +874,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/subpieces.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3855">
-          <caret line="391" column="13" selection-start-line="391" selection-start-column="13" selection-end-line="391" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pieces.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="419" column="53" selection-start-line="419" selection-start-column="53" selection-end-line="419" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/classes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apploop.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="100" column="24" selection-start-line="100" selection-start-column="24" selection-end-line="100" selection-end-column="24" />
-          <folding>
-            <element signature="e#81#112#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/drawing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5460">
-          <caret line="364" column="50" selection-start-line="364" selection-start-column="50" selection-end-line="364" selection-end-column="50" />
+        <state relative-caret-position="4560">
+          <caret line="304" column="0" selection-start-line="304" selection-start-column="0" selection-end-line="304" selection-end-column="0" />
           <folding>
             <element signature="e#63#85#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/computer.py">
+    <entry file="file://$PROJECT_DIR$/apploop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-565">
-          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+        <state relative-caret-position="1140">
+          <caret line="98" column="31" selection-start-line="98" selection-start-column="31" selection-end-line="98" selection-end-column="31" />
+          <folding>
+            <element signature="e#81#112#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/subpieces.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5850">
+          <caret line="391" column="13" selection-start-line="391" selection-start-column="13" selection-end-line="391" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/graphics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4605">
-          <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+        <state relative-caret-position="195">
+          <caret line="130" column="64" selection-start-line="130" selection-start-column="64" selection-end-line="130" selection-end-column="64" />
           <folding>
             <element signature="e#47#69#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pieces.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="94" column="16" selection-start-line="94" selection-start-column="8" selection-end-line="94" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/computer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="297" column="0" selection-start-line="297" selection-start-column="0" selection-end-line="297" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="155" column="24" selection-start-line="155" selection-start-column="24" selection-end-line="155" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
