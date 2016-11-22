@@ -1,7 +1,7 @@
 # This file contains everything necessary for making AI decisions.
 
 from classes import *
-
+import random
 
 class Game(object):
     """
@@ -282,7 +282,7 @@ class AI(object):
         :return: None
         """
         max_value = None
-        ideal = None
+        ideals = None
         for unit in self.side.get_units():
             move_num = 0
             loc = self.game.get_board().get_loc(unit)
@@ -310,8 +310,11 @@ class AI(object):
                     value = self.determine_value()
                     if max_value is None or max_value < value:
                         max_value = value
-                        ideal = (unit, c_move[0], c_move[1])
+                        ideals = [(unit, c_move[0], c_move[1])]
+                    elif max_value == value:
+                        ideals.append((unit, c_move[0], c_move[1]))
                     self.game.get_board().move_unit(unit, -c_move[0], -c_move[1], True, True)
+        ideal = ideals[random.randint(0, len(ideals) - 1)]
         #print(ideal)
         self.game.get_board().move_unit(ideal[0], ideal[1], ideal[2])
 
