@@ -28,6 +28,7 @@ class Game(object):
         :param side: what side the AI is playing
         :return: None
         """
+        self.new_game()
         self.ai_side = side
         self.ai = AI(side, self)
 

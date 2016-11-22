@@ -96,6 +96,7 @@ class Press(object):
         if (w_length//2 - 2*sq_size) < x < (w_length//2 + 2*sq_size):
             if dist + 2*sq_size > y > dist + sq_size:
                 game.set_screen("game")
+                game.make_ai_game(None)
             elif dist + sq_size > y > dist:
                 game.set_screen("game")
                 game.make_ai_game(game.get_black())
