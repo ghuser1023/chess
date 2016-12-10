@@ -238,16 +238,11 @@ class Selections(object):
         ability = game.edit_state()[1].abil_methods()[abil]
         squares = game.edit_state()[3]
         if game.edit_state()[1].get_side() == game.get_cur_side():
-            error = ability(squares)
-            if error == "":
-                game.edit_state()[0] = "unit_selected"
-                game.edit_state()[2] = 0
-                game.edit_state()[4] = -1
-                game.edit_state()[3].clear()
-            else:
-                Selections.error = error
-                game.edit_state()[2] = game.edit_state()[1].get_num_input(game.edit_state()[4])
-                game.edit_state()[3].clear()
+            Selections.error = ability(squares)
+            game.edit_state()[0] = "unit_selected"
+            game.edit_state()[2] = 0
+            game.edit_state()[4] = -1
+            game.edit_state()[3].clear()
         else:
             Selections.error = "It is " + game.get_cur_side().get_name() + " to move."
 
